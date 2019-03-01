@@ -1,0 +1,7 @@
+language: elixir
+elixir:
+  - '1.8.1'
+install:
+  - mix local.rebar --force; mix local.hex --force; mix deps.get
+script:
+  - mix test
