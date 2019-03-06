@@ -7,6 +7,12 @@
 # General application configuration
 use Mix.Config
 
+config :crud_app, CrudApp.Repo,
+  database: "crud_app_repo",
+  username: "user",
+  password: "pass",
+  hostname: "db"
+
 config :crud_app,
   ecto_repos: [CrudApp.Repo]
 

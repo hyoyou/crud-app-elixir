@@ -13,6 +13,12 @@ config :crud_app, CrudAppWeb.Endpoint,
   http: [:inet6, port: System.get_env("PORT") || 4000],
   url: [host: "example.com", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
+  # http: [port: {:system, "PORT"}],
+  # url: [host: "localhost", port: {:system, "PORT"}], # This is critical for ensuring web-sockets properly authorize.
+  # cache_static_manifest: "priv/static/cache_manifest.json",
+  # server: true,
+  # root: ".",
+  # version: Application.spec(:phoenix_distillery, :vsn)
 
 # Do not print debug messages in production
 config :logger, level: :info
@@ -62,6 +68,7 @@ config :logger, level: :info
 # start per endpoint:
 #
 #     config :crud_app, CrudAppWeb.Endpoint, server: true
+
 #
 # Note you can't rely on `System.get_env/1` when using releases.
 # See the releases documentation accordingly.

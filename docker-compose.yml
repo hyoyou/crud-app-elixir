@@ -1,0 +1,19 @@
+version: '3.5'
+
+services:
+  web:
+    depends_on:
+      - db
+    image: "crud_app:latest"
+    ports:
+      - "80:4000"
+    env_file:
+      - config/docker.env
+  db:
+    image: postgres:11
+    volumes:
+      - "./volumes/postgres:/var/lib/postgresql/data"
+    ports:
+      - "5432:5432"
+    env_file:
+      - config/docker.env
