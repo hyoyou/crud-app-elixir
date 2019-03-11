@@ -6,7 +6,7 @@ Dockerfile
 Makefile
 README*
 test/
-priv/static/
+# priv/static/
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

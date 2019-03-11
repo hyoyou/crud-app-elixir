@@ -13,7 +13,7 @@ config :crud_app, CrudAppWeb.Endpoint,
 
 # Configure your database
 config :crud_app, CrudApp.Repo,
-  username: System.get_env("DATABASE_USERNAME"),
+  username: 'postgres',
   password: System.get_env("DATABASE_PASSWORD"),
   database: "crud_app_prod",
   hostname: "host.docker.internal",
