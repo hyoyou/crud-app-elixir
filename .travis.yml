@@ -9,9 +9,10 @@ services:
   - docker
 deploy:
   provider: elasticbeanstalk
-  access_key_id: $ACCESSKEYID
+  access_key_id: 
+    secure: "ss6OjiQFu268rfmEE7QiXGQHXzUP7q8IN0ZmRODAB2wmIsDDs81QIr9JcypmBKpFGPU69U0U/xaYC13vKGcjC40j6nwaPx7vJIkiIWEVFKN2uX1TR6zDXoz9WBcCssHt4Oj0KSTGOcjvKLy56ue6buaaKi+eo73vYGZ0agDgvxQ0/7qUNpJra7WjtsOQtCEgZUPr/mAyR6dx3JeRMERqZA0ZhuebTxfqTO6p1Ys+oyUUeYmKmSQrzl4S56UM+lSk9uGHV9bafJhytIxBA3k1rkGTafmf/ibgW6Yh8EELg4pzow4QmyzweLqeOAKD/MJE9JX/jVtEkzwXM9i0H0EsZfajTIpjwdbcgOB0nbtqB3ABNiqMAVVG5OiKlcSSNEigYKv1928krGvecXb/WU6WNh09W5Fg6LMwdhR4KKzozz/Ty+O1uw3ewDbAQcDzQWWxuj+98fOD6ckcZ28mLlE5/zQcehYzOEcqCJvmyEmKqNo5Uw2HMQ9JVJnw8HUmyxEBEwoBmmwgja/hEA4RBgwuigK4E99sZIDyX5W6DSjisoqdMGrU+i+AyLDtiG9bsfds88Xh4ozxS8seE8p6OrpFewyLqPUvvMDAB4PBuKUmMpOVKidNW8jQWOt83WQiiVbBKcZkpIh0VUO++rWv03cvprFQFPHCbutR1YbzGwqQxp4="
   secret_access_key:
-    secure: "$SECRETACCESSKEY"
+    secure: "aGzdLIy+U1Z5AoVBAB7FZXm4OYTEtYijS13WErLim4Xor4DtHPo8U5x7NbkeMl5lsMLwppfVMs6rTUyJS9zoqM2+iQ7TQ7hLE0oTM94Rs9sTYSOpSxN5vtKkll3DbXJRRvY8sMfCpcnqAifLyw/vK+EpOkg7H2VVuN1eesZFuzFSpfEklPXvHpHN70iuesMx7LUGCxtPxdR4M15KXQ38tuTStTQA3/UUph5s2FPGlfwyU0gE4hEzP9544rHBu9GQFwvFAY9njpx7yBKenyxlEFxiRa8NriCJOHko8O/Rhi+YQjyR4HA8yO0UZDnKvn/8Nv/wehoKILg4i8Dl9NBBCSRxkapjsgFJeyUoHRkcy0GZI9yvcb66dlzvSxe6A5Mi+oTrDDL1+tjXklAaDuaJXqNwLXiD/h6x1Joi9EDJvbqo6Xq3zM8VQZ1U5PY6hv1aRE95cj3nyOk2DVG5NnraOpcn1bB08YtG6RbyKqDtWxb052/V8vAtB1Dx6p/zQcdqv5GvGIaq3aLu8JjuFH24lJi8AbRTQ4fbFc2/xJ42r1ynnhyvdTt6RR1nY0xA+lJ9PLfdivp3wzjYqwlDX3xKYt8CFy9l0CWpaHVNzOvFInppBdF0fkSgxq/i0B+z//vgG/FuVt6LU6cQLitBGAZTWjxYrh+gUZNLy7eih9HB54w="
   region: "us-east-1"  
   app: "crud_app"
   env: "crud-app-dev"
@@ -19,4 +20,4 @@ deploy:
   on:
     branch: master
 after_deploy:
-  - echo "Done deploying"
+  - echo "Deployed!"
