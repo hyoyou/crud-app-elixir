@@ -65,6 +65,7 @@ config :logger, level: :info
 # start per endpoint:
 #
 #     config :crud_app, CrudAppWeb.Endpoint, server: true
+
 #
 # Note you can't rely on `System.get_env/1` when using releases.
 # See the releases documentation accordingly.
