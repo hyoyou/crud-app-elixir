@@ -1,10 +1,6 @@
-# The version of Alpine to use for the final image
-# This should match the version of Alpine that the `elixir:1.7.2-alpine` image uses
-ARG ALPINE_VERSION=3.8
+ARG ALPINE_VERSION=3.9
 
-FROM elixir:1.7.2-alpine AS builder
-
-EXPOSE 80
+FROM elixir:1.8.1-alpine AS builder
 
 # The following are build arguments used to change variable parts of the image.
 # The name of your application/release (required)
@@ -33,7 +29,7 @@ RUN apk update && \
   apk upgrade --no-cache && \
   apk add --no-cache \
     nodejs \
-    yarn \
+    npm \
     git \
     build-base && \
   mix local.rebar --force && \
@@ -49,8 +45,7 @@ RUN mix do deps.get, deps.compile, compile
 # This is mostly here for demonstration purposes
 RUN if [ ! "$SKIP_PHOENIX" = "true" ]; then \
   cd ${PHOENIX_SUBDIR}/assets && \
-  yarn install && \
-  yarn deploy && \
+  npm install && \
   cd .. && \
   mix phx.digest; \
 fi
