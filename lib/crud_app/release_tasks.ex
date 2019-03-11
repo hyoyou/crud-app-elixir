@@ -1,4 +1,4 @@
-defmodule CrudAppWeb.ReleaseTasks do
+defmodule CrudApp.ReleaseTasks do
     def migrate do
       {:ok, _} = Application.ensure_all_started(:crud_app)
   
