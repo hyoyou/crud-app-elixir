@@ -1,4 +1,6 @@
-# CrudApp
+# CrudApp [![TravisCI](https://travis-ci.org/hyoyou/crud-app-elixir.svg?branch=master)]
+
+[Production Application URL](crud-app-dev.us-east-1.elasticbeanstalk.com)
 
 To start your Phoenix server:
 
