@@ -11,7 +11,7 @@ services:
 deploy:
   provider: elasticbeanstalk
   access_key_id: "$ACCESSKEYID"
-  secret_access_key: "$ACCESSKEYSECRET"
+  secret_access_key: "$SECRETACCESSKEY"
   region: us-east-1
   app: crud_app
   env: crud-app-dev
