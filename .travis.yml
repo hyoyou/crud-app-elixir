@@ -1,22 +1,24 @@
 sudo: required
 language: elixir
 elixir:
-  - '1.8.1'
+- 1.8.1
 install:
-  - mix local.rebar --force; mix local.hex --force; mix deps.get
+- mix local.rebar --force; mix local.hex --force; mix deps.get
 script:
-  - mix test
+- mix test
 services:
-  - docker
+- docker
 deploy:
   provider: elasticbeanstalk
-  access_key_id: 
-    secure: "2rc5S3VY+iJZW8g+iQjQNmncLzqaxyb45/VOcS3Y2e8WKdKiu6PmIaSxqdt4crp7KMMTiU/i+AYZNU2HvGKb1IC/ij0d+EHjbTGHLo3jxqSZ0EXb8KuF99DrAdepREVzJOYe83J4cczQHGYzopN6LjJ5PhOjK+wWld+7am9Tat9DlOYOxI45CBOXIN6Jvlj9lQdIrX7MH/K3Zc+TGlRWRlSh6cG8tG0XCKX+fFjg9XtdljGLZKz4fJpu+J+3Vg8W2I7Zpo7530hiYL86xJUM8No/2rpm33yJ/mJRAeJDuiZ+9vEmF5vm6CdPeTtH06gzhgNXHFQsIDzrYC2lXGuFuA79st+ICDxB2iOhtFzd6biE5SrxwCVi2vYBfqkGZ+czLh9FY8ZeugHKXa7HB5ZNO0o9W94Jo+3T4/oF8e7THJmjnhd6N92Ze7DSkJhOcUTIxNxuYRsoox3CxHugCWLY+NSt91RBc4VsMPPbn3MeUGVH2RgowjPrBIBX2O1VXtIUO/3eGlqCJOzzwcUV5nfRCRZUi/vWtOiN1yw6ssGp+M14IyLy1y1hvvNXiQPqg2DBGjxtEcXimBq0gzSgtew9lK1O1HUtILfEAYuKTaQGs0e+RwC2uCw9bPhcdadNeXCJHyxjENGP/uljN0CC0bFkGqy4hySIXTa0EoOQIvltywA="
-  secret_access_key:
-    secure: "CtOTIAJHzKRCrHJxrX7gQEFQvvZwuCZqFGKjaplhdqTrveRegMJubd/7mP47bw3+5PWSE0xthmmXhffXsLpSK4ABs13AFHjHm6uN+nhS613I651S5MuZ2ZjxJjFtnJmlrICmM4mV9Z830y0/Rals4hIRebMR5qu/tVfFmK6RkEHbuk13xiNsjXbwpGJJaXXidjVBve+JnY5S+q9B56jFgrZtOiyf9oqsfoC1ttQ+VGhRyWB3vlZdVzBpbpVK/LbthSjIfcXhAmhQXimlXGyH7R/KotKcgf4iV3djFU0k9+6mjbs3v/QAZh8luljeaxcwwSb3Y9yjszZRV8K9+g1mRJjCg+6Vk9SzDg6bxdmaiG7N/hJf3xFe75Hp2v7t1e5590gqIjXLYsJBFgGfankCzqfnvbFTS+pN8lFam2WN8Cyg2ZbqqIasCeJu06RId5gFpP28/tSPxPQjjWLLSKzoSAkpUD2K8KpGJePFagzWHaQy4P1thWyEiTobNnAr4Ok7WviZWnmSO4l+RFDW2fSOhvDWD/NuCpXpzfcduRqfAa1Xh3nSkoQjeuZO8PzgBvY1ruK5AQvuIJ7U/uvA9etln1V1INypLsF6vvkTT+nqYDmNk+LNOORBF3oCqmLhMz34KvzkOzj+0rM8j9HoACPmZkHxEZtQ7WKtVHKiL4Kk/9k="
-  region: "us-east-1"
-  app: "crud_app"
-  env: "crud-app-dev"
-  bucket_name: "elasticbeanstalk-us-east-1-234123676202"
+  access_key_id: "$ACCESSKEYID"
+  secret_access_key: "$ACCESSKEYSECRET"
+  region: us-east-1
+  app: crud_app
+  env: crud-app-dev
+  bucket_name: elasticbeanstalk-us-east-1-234123676202
   on:
     branch: master
+env:
+  global:
+  - secure: T9jJw/4ngv7/SNocRreVSdZR8jEvQd+mORz9emaF6a9pc26vlk4s+CEiyWdbSlTgXfg5NHgRGY7sinpMZ1w3vL21+veW9rRb8/1/dGVfYZkw/7pxOFbDPCQNsVOGhlopXdptqSGOLLe7RPVGK7GWd7hx33ViAMv9KyhWcU9Pnvmz9BoW8lJ4VlJjwEaEz1gByoE8kPkLmKMhi+z9yPQ1XUrC0M72CeAVgGq27U7LqjLGjWncyr7kML/z1QZ/dZBhrfZzFoL+A0ScpJLoqogo8cCmnJGJZz1WtCfpF3S5DNvD9RiL4Hwa9/IyG8bc5HEQ70CTAw64PriJ24nC15cis3e8mPmP0ALppBzikK9DV9Mkp7+tI9s8tgfSqOCf5fbXaoykiKXpV8FZwbzSzmKPrN2ODuMvbj6k4XTTP9bbG0sQImkAyaqCrSV+PJPQwQ51GUW2nzl1iHB7um+t2koyUqV140HQSIRlTrR8j9a6jc3hMvxaL5E/nY/96BHcvD7Dxec9Gjhri0du7rO+yPkmkm++c/B7c6tOoxft8pjYHclj1oXOtce7vQEIrI1h36rvFK4CYInqTEvx1SpUGaTbq2tvUffTqbNDb2Z2RspD9Xnz0L2ZlLn1DCGuPMk5kfOqy8autPHbBnRNi7sl+W0Zrcy/fLAiDAJIIizSz0XzqMI=
+  - secure: ryCs0oOZRS/ec/hqqAm35EwLOAQx46pIe0y5AAcZEzSXXhTlyD/plJX3d/KQrihlKENlvUUNM6XgDZHVi5ySb2Jb7Ok7q+6x6noqkDzslDaaia3tVF7PxywbWNJTZfMD/J6oJlvrODSj1IxL9jFVCN5cn+yq0ky+mZc2D8MQ2RqC5+u2F53Ej1kmjpPH6hahFOnlgFAekwow9ycY6A6v0TjR5gdS2W/UHJnSykfU/Wc59Af2d2sstYqxNO9xAl9ApSrhrr0Cu2o5vwpsmTgAkx2MICQ6H+mCAZkHfkKj1CeS9NOaK6iXqhft6dbOH7QFwtMDBioOQv05GFmnuNEOEHto5Gif4yRtoa4lmexvMnjx85vNBCyAbQ/Mesy2MnN434lwvNmAVbLl8K3zmzXYutJWUekpokaswu6kUurTJ0vyQxVVN+7jPx9aEB3KWTWym2RjcnhEyRQgqh657pEyGBkxFB4Q7nmAxu78w96GbhN8cpmjFblUGJZgLSlswa4l1Smgwg6WhXd150GeLsfeQwQIA5Yr1+tfJzKm0itM1o0gqzCdMxaan5X8tnzuDQ3XnC5xePoUHCoTp+kCuGskDi4guBX8OXM+aeyjq14RP5EROmnf0/nbM+lrdIiXhyd/tl0Dss2nX+GbLc1HIY8uIYCPrXdv84sbdEmf1rYr5ZY=
