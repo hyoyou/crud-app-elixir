@@ -16,7 +16,7 @@ defmodule CrudAppWeb.Router do
   scope "/", CrudAppWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get "/*anything", PageController, :index
   end
 
   # Other scopes may use custom stacks.

@@ -19,11 +19,15 @@ config :crud_app, CrudAppWeb.Endpoint,
   #   ]
   # ]
   watchers: [
-    node: [
-      "node_modules/webpack/bin/webpack.js",
-      "--mode",
-      "development",
-      "--watch-stdin",
+    # node: [
+    #   "node_modules/webpack/bin/webpack.js",
+    #   "--mode",
+    #   "development",
+    #   "--watch-stdin",
+    #   cd: Path.expand("../assets", __DIR__)
+    # ],
+    npm: [
+      "run", "serve", 
       cd: Path.expand("../assets", __DIR__)
     ]
   ]
