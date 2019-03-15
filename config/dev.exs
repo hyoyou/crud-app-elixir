@@ -15,7 +15,7 @@ config :crud_app, CrudAppWeb.Endpoint,
     npm: [
       "run",
       "serve",
-      cd: Path.expand("../assets", __DIR__)]
+      cd: Path.expand("../assets", __DIR__)
     ]
   ]
 
