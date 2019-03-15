@@ -14,7 +14,7 @@ config :crud_app, CrudAppWeb.Endpoint,
   watchers: [
     npm: [
       "run",
-      "serve", 
+      "serve",
       cd: Path.expand("../assets", __DIR__)
     ]
   ]
