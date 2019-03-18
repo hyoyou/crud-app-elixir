@@ -1,13 +1,21 @@
 sudo: required
 language: elixir
 elixir:
-- 1.8.1
+  - 1.8.1
+env:
+  - NODE_JS_VERSION=10.15.0
+before_install:
+  - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+  - nvm install 10.15.0
 install:
-- mix local.rebar --force; mix local.hex --force; mix deps.get
+  - mix local.rebar --force; mix local.hex --force; mix deps.get
 script:
-- mix test
+  - mix test
+  - bash -c "nvm use $NODE_JS_VERSION" || true
+  - bash -c "source ~/.nvm/nvm.sh; nvm install $NODE_JS_VERSION; node --version"
+  - cd assets && npm install && npm run test:unit
 services:
-- docker
+  - docker
 deploy:
   provider: elasticbeanstalk
   access_key_id: "$ACCESSKEYID"
