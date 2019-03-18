@@ -2,11 +2,10 @@ sudo: required
 language: elixir
 elixir:
 - 1.8.1
+before_install:
+- npm i -g npm@10.15.0
 install:
 - mix local.rebar --force; mix local.hex --force; mix deps.get
-matrix:
-  include:
-    - node_js: 10.15.0
 script:
 - mix test
 - cd assets && npm install && npm run test:unit
