@@ -3,7 +3,7 @@
     <h1>{{ msg }}</h1>
     <h3>Add to the Bucket!</h3>
     <form>
-      I want to <input type="text" name="activity"> in <input type="text" name="place">.
+      I want to <input type="text" name="activity" value="insert activity here!"> in <input type="text" name="location" value="insert location here!">.
       <input type="submit" value="Add">
 
     </form>
