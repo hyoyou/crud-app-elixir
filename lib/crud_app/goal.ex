@@ -4,7 +4,7 @@ defmodule CrudApp.Goal do
 
 
   schema "goals" do
-    field :achieved, :boolean, default: false
+    field :is_achieved, :boolean, default: false
     field :activity, :string
     field :location, :string
 
@@ -14,7 +14,7 @@ defmodule CrudApp.Goal do
   @doc false
   def changeset(goal, attrs) do
     goal
-    |> cast(attrs, [:activity, :location, :achieved])
-    |> validate_required([:activity, :location, :achieved])
+    |> cast(attrs, [:activity, :location, :is_achieved])
+    |> validate_required([:activity, :location, :is_achieved])
   end
 end

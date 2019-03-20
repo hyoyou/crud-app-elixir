@@ -5,7 +5,7 @@ defmodule CrudApp.Repo.Migrations.CreateGoals do
     create table(:goals) do
       add :activity, :string
       add :location, :string
-      add :achieved, :boolean, default: false, null: false
+      add :is_achieved, :boolean, default: false, null: false
 
       timestamps()
     end
