@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="bucket-list">
     <h1>{{ msg }}</h1>
     <h3>Add to the Bucket!</h3>
     <form>
@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  name: 'Home',
+  name: 'BucketList',
   props: {
     msg: String
   }
