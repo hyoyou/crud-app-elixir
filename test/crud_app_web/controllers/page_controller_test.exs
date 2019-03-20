@@ -3,6 +3,6 @@ defmodule CrudAppWeb.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get(conn, "/")
-    assert html_response(conn, 200) =~ "<!DOCTYPE html>"
+    assert html_response(conn, 200) =~ "Travel Bucket List"
   end
 end
