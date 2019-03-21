@@ -1,4 +1,4 @@
-defmodule CrudApp.Goal do
+defmodule CrudAppWeb.Goal do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -15,6 +15,6 @@ defmodule CrudApp.Goal do
   def changeset(goal, attrs) do
     goal
     |> cast(attrs, [:activity, :location, :is_achieved])
-    |> validate_required([:activity, :location, :is_achieved])
+    |> validate_required([:activity, :location, :achieved])
   end
 end
