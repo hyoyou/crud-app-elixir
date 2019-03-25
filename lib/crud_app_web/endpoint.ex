@@ -42,5 +42,10 @@ defmodule CrudAppWeb.Endpoint do
     key: "_crud_app_key",
     signing_salt: "WidPrUka"
 
+  plug Corsica,
+    origins: "*",
+    allow_headers: ["content-type"],
+    log: [rejected: :error, invalid: :warn, accepted: :debug]
+
   plug CrudAppWeb.Router
 end

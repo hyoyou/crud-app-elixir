@@ -16,11 +16,6 @@ defmodule CrudAppWeb.Router do
   scope "/api", CrudAppWeb do
     pipe_through :api
     
-    resources "/goals", GoalController, except: [:new, :edit]
+    resources "/goals", GoalController
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", CrudAppWeb do
-  #   pipe_through :api
-  # end
 end
