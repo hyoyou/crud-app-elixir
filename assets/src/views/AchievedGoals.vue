@@ -1,5 +1,5 @@
 <template>
   <div class="index">
-    <h1>This is an index page</h1>
+    <h1>Achieved Goals</h1>
   </div>
 </template>

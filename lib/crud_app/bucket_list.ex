@@ -50,9 +50,6 @@ defmodule CrudApp.BucketList do
 
   """
   def create_goal(attrs \\ %{}) do
-    IO.puts("1===========================")
-    IO.inspect(attrs)
-    IO.puts("2===========================")
     %Goal{}
     |> Goal.changeset(attrs)
     |> Repo.insert()
