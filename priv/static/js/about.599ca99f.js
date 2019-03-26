@@ -1,2 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["about"],{a92d:function(e,n,t){"use strict";t.r(n);var a=function(){var e=this,n=e.$createElement;e._self._c;return e._m(0)},s=[function(){var e=this,n=e.$createElement,t=e._self._c||n;return t("div",{staticClass:"index"},[t("h1",[e._v("This is an index page")])])}],i=t("2877"),c={},l=Object(i["a"])(c,a,s,!1,null,null,null);n["default"]=l.exports}}]);
-//# sourceMappingURL=about.599ca99f.js.map

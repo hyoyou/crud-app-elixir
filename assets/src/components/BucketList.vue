@@ -36,7 +36,8 @@ export default {
       goals: [],
       activity: '',
       location: '',
-      error: null
+      error: null,
+      uri: process.env.VUE_APP_API_URI
     }
   },
   created () {
@@ -45,7 +46,7 @@ export default {
   methods: {
     postGoal: function () {
       this.newGoal = { activity: this.activity, location: this.location }
-      axios.post(`http://localhost:4000/api/goals`,
+      axios.post(this.uri,
         { goal: this.newGoal },
         { headers: {
           'Content-type': 'application/json',
@@ -57,7 +58,7 @@ export default {
     fetchGoals: function () {
       this.error = this.goals = null
 
-      axios.get(`http://localhost:4000/api/goals`)
+      axios.get(this.uri)
       .then(response => {
         this.goals = response.data.data
       })
