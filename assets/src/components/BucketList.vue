@@ -1,9 +1,5 @@
 <template>
   <div class="bucket-list">
-    <div class="error" v-if="error">
-        {{ error }}
-    </div>
-
     <h1>{{ msg }}</h1>
     <h3>Current Goals</h3>
       <div class="list-of-goals">
@@ -24,7 +20,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import Axios from 'axios';
 
 export default {
   name: 'BucketList',
@@ -34,8 +30,8 @@ export default {
   data () {
     return {
       goals: [],
-      activity: '',
-      location: '',
+      activity: null,
+      location: null,
       error: null,
       uri: process.env.VUE_APP_API_URI
     }
@@ -46,25 +42,20 @@ export default {
   methods: {
     postGoal: function () {
       this.newGoal = { activity: this.activity, location: this.location }
-      axios.post(this.uri,
+      Axios.post(this.uri,
         { goal: this.newGoal },
         { headers: {
           'Content-type': 'application/json',
         }}
       )
       this.goals.push(this.newGoal)
-      this.activity = this.location = ''
+      this.activity = this.location = null
     },
-    fetchGoals: function () {
-      this.error = this.goals = null
+    fetchGoals: async function () {
+      this.goals = null
 
-      axios.get(this.uri)
-      .then(response => {
-        this.goals = response.data.data
-      })
-      .catch(error => {
-        this.error = error
-      })
+      let goalsData = await Axios.get(this.uri)
+      this.goals = goalsData.data.data
     }
   }
 }
