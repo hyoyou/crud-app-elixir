@@ -1,0 +1,20 @@
+{
+  "data": {
+    "data": {
+      "goals": [
+        { 
+          "id": 1,
+          "activity": "swim with sharks",
+          "is_achieved": false,
+          "location": "the Bahamas"
+        },
+        { 
+          "id": 2,
+          "activity": "feed flamingos",
+          "is_achieved": false,
+          "location": "Aruba"
+        }
+      ]
+    }
+  }
+}

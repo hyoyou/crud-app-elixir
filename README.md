@@ -1,22 +1,73 @@
 # CrudApp [![TravisCI](https://travis-ci.org/hyoyou/crud-app-elixir.svg?branch=master)]
 
-[Production Application URL](crud-app-dev.us-east-1.elasticbeanstalk.com)
+[Production Application URL](http://crud-app-dev.us-east-1.elasticbeanstalk.com/#/)
 
-To start your Phoenix server:
+## Prerequisites
+* Elixir 1.5
+* Phoenix 1.4.1
+* PostgreSQL 11
+* Docker 2
+* npm to install Node.js dependencies
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Install Node.js dependencies with `cd assets && npm install`
-  * Start Phoenix endpoint with `mix phx.server`
+## Setup
+* Create Distillery release with:
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+```
+$ mix release
+```
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+* Install dependencies with:
 
-## Learn more
+```
+$ mix deps.get
+```
 
-  * Official website: http://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
+* Create and migrate your database with:
+
+```
+$ mix ecto.setup
+```
+
+* Install Node.js dependencies with: 
+
+```
+$ cd assets && npm install
+```
+
+
+
+* To use Docker, run Makefile build task with:
+
+```
+$ make build
+```
+
+## Running the Tests
+* To run Phoenix tests:
+
+```
+$ mix test
+```
+
+* To run Vue.js tests:
+
+```
+$ cd assets && npm run test:unit
+```
+
+## Running the Server
+
+* To start your Phoenix server: 
+
+```
+$ mix phx.server
+``` 
+& navigate to localhost:[port #] that is output to terminal
+
+
+
+* To use Docker, run Makefile run task with:
+
+```
+$ make run
+```

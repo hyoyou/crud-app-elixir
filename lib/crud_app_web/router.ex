@@ -13,14 +13,9 @@ defmodule CrudAppWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", CrudAppWeb do
-    pipe_through :browser
-
-    get "/*anything", PageController, :index
+  scope "/api", CrudAppWeb do
+    pipe_through :api
+    
+    resources "/goals", GoalController
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", CrudAppWeb do
-  #   pipe_through :api
-  # end
 end

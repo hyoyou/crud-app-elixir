@@ -1,16 +1,18 @@
 defmodule CrudAppWeb.ErrorView do
   use CrudAppWeb, :view
+  
+  @not_found %{detail: "Endpoint Not Found"}
+  @server_error %{detail: "Internal Server Error"}
 
-  # If you want to customize a particular status code
-  # for a certain format, you may uncomment below.
-  # def render("500.html", _assigns) do
-  #   "Internal Server Error"
-  # end
+  def render("404.json", _assigns) do
+    %{errors: @not_found}
+  end
 
-  # By default, Phoenix returns the status message from
-  # the template name. For example, "404.html" becomes
-  # "Not Found".
+  def render("500.json", _assigns) do
+    %{errors: @server_error}
+  end
+
   def template_not_found(template, _assigns) do
-    Phoenix.Controller.status_message_from_template(template)
+    %{errors: %{detail: Phoenix.Controller.status_message_from_template(template)}}
   end
 end
