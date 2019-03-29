@@ -10,8 +10,8 @@
     <h3>Add to the Bucket!</h3>
       <form>
         <div id="new-goal">
-          I want to <input type="text" name="activity" v-model="activity" placeholder="insert activity here!"> 
-          in <input type="text" name="location" v-model="location" placeholder="insert location here!">.
+          I want to <input type="text" name="activity" v-model="activity" data-activity placeholder="insert activity here!"> 
+          in <input type="text" name="location" v-model="location" data-location placeholder="insert location here!">.
 
           <button type="submit" name="submit" v-on:click.prevent="postGoal">Add</button>
         </div>
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import Axios from 'axios';
+import axios from 'axios'
 
 export default {
   name: 'BucketList',
@@ -30,8 +30,8 @@ export default {
   data () {
     return {
       goals: [],
-      activity: null,
-      location: null,
+      activity: "",
+      location: "",
       error: null,
       uri: process.env.VUE_APP_API_URI
     }
@@ -40,28 +40,31 @@ export default {
     this.fetchGoals()
   },
   methods: {
-    postGoal: function () {
+    postGoal: async function () {
       this.newGoal = { activity: this.activity, location: this.location }
-      Axios.post(this.uri,
+
+      const getPromise = await axios.post(this.uri,
         { goal: this.newGoal },
         { headers: {
           'Content-type': 'application/json',
         }}
       )
+
       this.goals.push(this.newGoal)
-      this.activity = this.location = null
+      this.activity = this.location = ""
+      return getPromise
     },
     fetchGoals: async function () {
-      this.goals = null
+      this.goals = []
 
-      let goalsData = await Axios.get(this.uri)
+      let goalsData = await axios.get(this.uri)
       this.goals = goalsData.data.data
+      return this.goals
     }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 h3 {
   margin: 40px 0 0;
