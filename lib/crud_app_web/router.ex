@@ -18,4 +18,10 @@ defmodule CrudAppWeb.Router do
     
     resources "/goals", GoalController
   end
+
+  scope "/", CrudAppWeb do
+    pipe_through :browser
+
+    get "/*path", PageController, :index
+  end
 end
