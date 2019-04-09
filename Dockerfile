@@ -48,6 +48,7 @@ RUN mix do deps.get, deps.compile, compile
 RUN if [ ! "$SKIP_PHOENIX" = "true" ]; then \
   cd ${PHOENIX_SUBDIR}/assets && \
   npm install && \
+  npm run build && \
   cd .. && \
   mix phx.digest; \
 fi
