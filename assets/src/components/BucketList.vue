@@ -42,7 +42,6 @@ export default {
   methods: {
     postGoal: async function () {
       this.newGoal = { activity: this.activity, location: this.location }
-
       const getPromise = await axios.post(this.uri,
         { goal: this.newGoal },
         { headers: {
