@@ -54,6 +54,20 @@ describe('BucketList.vue', () => {
     expect(spy).toHaveBeenCalled();
   })
 
+  it('sets the correct activity data to persist when the form is filled', () => {
+    const wrapper = shallowMount(BucketList)
+    wrapper.find('[data-activity]').setValue('cool activity')
+  
+    expect(wrapper.vm.activity).toEqual('cool activity')
+  })
+
+  it('sets the correct location data to persist when the form is filled', () => {
+    const wrapper = shallowMount(BucketList)
+    wrapper.find('[data-location]').setValue('awesome place')
+    
+    expect(wrapper.vm.location).toEqual('awesome place')
+  })
+
   it('does not make a POST request when the button isn\'t clicked', () => {
     const spy = jest.spyOn(BucketList.methods, 'postGoal')
     shallowMount(BucketList)

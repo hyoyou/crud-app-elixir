@@ -9,11 +9,24 @@ services:
       - "80:4000"
     env_file:
       - config/docker.env
+    environment:
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: crud_app_prod
+      PGPORT: 5432
+      PGHOST: db
   db:
     image: postgres:11
+    restart: always
     volumes:
-      - "./volumes/postgres:/var/lib/postgresql/data"
+      - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     env_file:
       - config/docker.env
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
+volumes:
+  pgdata:
