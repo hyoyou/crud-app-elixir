@@ -6,25 +6,24 @@ EXPOSE 4000
 
 # The following are build arguments used to change variable parts of the image.
 # The name of your application/release (required)
-ARG APP_NAME=crud_app
-# The version of the application we are building (required)
-ARG APP_VSN=0.1.0
-# The environment to build with
-ARG MIX_ENV=prod
-# Set this to true if this release is not a Phoenix app
-ARG SKIP_PHOENIX=false
-# If you are using an umbrella project, you can change this
-# argument to the directory the Phoenix app is in so that the assets
-# can be built
-ARG PHOENIX_SUBDIR=.
-
-ENV SKIP_PHOENIX=${SKIP_PHOENIX} \
-    APP_NAME=${APP_NAME} \
-    APP_VSN=${APP_VSN} \
-    MIX_ENV=${MIX_ENV}
+# ARG APP_NAME=crud_app
+# # The version of the application we are building (required)
+# ARG APP_VSN=0.1.0
+# # The environment to build with
+# ARG MIX_ENV=prod
+# # Set this to true if this release is not a Phoenix app
+# ARG SKIP_PHOENIX=false
+# # If you are using an umbrella project, you can change this
+# # argument to the directory the Phoenix app is in so that the assets
+# # can be built
+# ARG PHOENIX_SUBDIR=.
+# SKIP_PHOENIX=${SKIP_PHOENIX} \
+ENV APP_NAME=crud_app \
+    APP_VSN=0.1.0 \
+    MIX_ENV=prod
 
 # By convention, /opt is typically used for applications
-WORKDIR /opt/app
+WORKDIR /app
 
 # This step installs all the build tools we'll need
 RUN apk update && \
@@ -45,24 +44,22 @@ RUN mix do deps.get, deps.compile, compile
 # This step builds assets for the Phoenix app (if there is one)
 # If you aren't building a Phoenix app, pass `--build-arg SKIP_PHOENIX=true`
 # This is mostly here for demonstration purposes
-RUN if [ ! "$SKIP_PHOENIX" = "true" ]; then \
-  cd ${PHOENIX_SUBDIR}/assets && \
-  npm install && \
-  npm run build && \
-  cd .. && \
-  mix phx.digest; \
-fi
+RUN cd assets && \
+    npm install && \
+    npm run build && \
+    cd .. && \
+    mix phx.digest
 
 RUN \
-  mkdir -p /opt/built && \
+  mkdir -p /built && \
   mix release --verbose && \
-  cp _build/${MIX_ENV}/rel/${APP_NAME}/releases/${APP_VSN}/${APP_NAME}.tar.gz /opt/built && \
-  cd /opt/built && \
-  tar -xzf ${APP_NAME}.tar.gz && \
-  rm ${APP_NAME}.tar.gz
+  cp _build/prod/rel/crud_app/releases/0.1.0/crud_app.tar.gz /built && \
+  cd /built && \
+  tar -xzf crud_app.tar.gz && \
+  rm crud_app.tar.gz
 
 # From this line onwards, we're in a new image, which will be the image used in production
-FROM alpine:${ALPINE_VERSION}
+FROM alpine:3.9
 
 # The name of your application/release (required)
 ARG APP_NAME=crud_app
@@ -73,10 +70,11 @@ RUN apk update && \
       openssl-dev
 
 ENV REPLACE_OS_VARS=true \
-    APP_NAME=${APP_NAME}
+    APP_NAME=crud_app \
+    MIX_ENV=prod
 
-WORKDIR /opt/app
+WORKDIR /app
 
-COPY --from=builder /opt/built .
+COPY --from=build /built /app/.
 
-CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} foreground
+CMD /app/bin/crud_app foreground

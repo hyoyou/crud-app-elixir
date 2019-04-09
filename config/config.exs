@@ -9,9 +9,9 @@ use Mix.Config
 
 config :crud_app, CrudApp.Repo,
   database: "crud_app_repo",
-  username: "user",
-  password: "pass",
-  hostname: "db"
+  username: "postgres",
+  password: "postgres",
+  hostname: "postgres"
 
 config :crud_app,
   ecto_repos: [CrudApp.Repo]
