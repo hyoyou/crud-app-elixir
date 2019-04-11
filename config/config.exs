@@ -8,18 +8,20 @@
 use Mix.Config
 
 config :crud_app, CrudApp.Repo,
-  database: "crud_app_repo",
-  username: "postgres",
-  password: "postgres",
-  hostname: "postgres"
+  database: System.get_env("BL_DATABASE_DB"),
+  username: System.get_env("BL_DATABASE_USER"),
+  password: System.get_env("BL_DATABASE_PASS"),
+  hostname: System.get_env("BL_DATABASE_HOST"),
+  types: SplitGym.PostgresTypes,
+  pool_size: 20
 
 config :crud_app,
   ecto_repos: [CrudApp.Repo]
 
 # Configures the endpoint
 config :crud_app, CrudAppWeb.Endpoint,
-  url: [host: "localhost"],
-  secret_key_base: "BqWrZFlIdxv3U6nrc3Lc4DQh+xHiNh3ACaE2+zKbbXP7DcKZZDjO9HAzrpmg+11H",
+  url: [host: System.get_env("BL_HOSTNAME")],
+  secret_key_base: System.get_env("BL_SECRET_KEY_BASE"),
   render_errors: [view: CrudAppWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: CrudApp.PubSub, adapter: Phoenix.PubSub.PG2]
 

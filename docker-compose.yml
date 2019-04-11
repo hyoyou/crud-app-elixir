@@ -5,37 +5,29 @@ volumes:
 
 services:
   web:
+    image: elixir:1.8.1-alpine
     env_file:
       - config/docker.env
-    # image: "crud_app:latest"
+    environment:
+      PGHOST: db
     depends_on:
       - db
     ports:
       - "4000:4000"
     volumes:
       - ./:/app
-    working_dir: /app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      PGUSER: postgres
-      PGPASSWORD: postgres
-      PGDATABASE: crud_app_prod
-      PGPORT: 5432
-      PGHOST: postgres
-    command: bash -c "app/bin/crud_app foreground"
+    build: .
 
   db:
+    image: postgres:11
     env_file:
       - config/docker.env
-    image: postgres:11
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data/pgdata
-    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
