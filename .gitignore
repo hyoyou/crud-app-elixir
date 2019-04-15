@@ -47,5 +47,3 @@ npm-debug.log
 !.elasticbeanstalk/*.global.yml
 
 /volumes
-
-*.env
