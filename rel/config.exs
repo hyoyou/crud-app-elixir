@@ -31,14 +31,19 @@ environment :dev do
   # dev mode.
   set dev_mode: true
   set include_erts: false
-  set cookie: :"8HnRNj0{E(bf230)2IYv4R`tBmL$U7?u=yLXz:iRN.):a;Tf4n.Fp9>Nxh_R%*02"
+  set cookie: :",,O0ov;QE4U9Y>Qfy?kzec1g38[6WDtv$~5&_Fnfe~}~oeXO;~DU|V907i6.bm@Z"
 end
 
 environment :prod do
   set include_erts: true
   set include_src: false
-  set cookie: :"{5|2Z*d^zd`J6N,xx(;rRULcM.$|Lak?}@=x~F;$(Mm,f80a[@!o7qMsOrML1_5~"
-  set vm_args: "rel/vm.args"
+  set cookie: :"ES1}rSS1@LjvjJY8g*`OMCI%pv3@JHMX9nz&Y)C@r/S`0I3?*O<pZgPWvgfoSl?_"
+  set config_providers: [
+    {Mix.Releases.Config.Providers.Elixir, ["${RELEASE_ROOT_DIR}/etc/config.exs"]}
+  ]
+  set overlays: [
+    {:copy, "rel/config/config.exs", "etc/config.exs"}
+  ]
   set post_start_hooks: "rel/hooks/post_start"
 end
 
@@ -53,4 +58,3 @@ release :crud_app do
     :runtime_tools
   ]
 end
-

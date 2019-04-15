@@ -1,32 +1,25 @@
 version: '3.5'
 
 services:
-  web:
+  app:
     depends_on:
-      - db
+      - postgres
     image: "crud_app:latest"
     ports:
       - "80:4000"
     env_file:
-      - config/docker.env
-    environment:
-      PGUSER: postgres
-      PGPASSWORD: postgres
-      PGDATABASE: crud_app_prod
-      PGPORT: 5432
-      PGHOST: db
-  db:
+      - rel.env
+    command: bash -c "/opt/app/bin/crud_app foreground"
+    
+  postgres:
     image: postgres:11
     restart: always
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
     env_file:
-      - config/docker.env
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      PGDATA: /var/lib/postgresql/data/pgdata
+      - rel.env
+
 volumes:
   pgdata:

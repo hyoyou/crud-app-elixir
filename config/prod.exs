@@ -10,12 +10,12 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :crud_app, CrudAppWeb.Endpoint,
-  http: [port: {:system, "PORT"}],
-  url: [host: "localhost", port: {:system, "PORT"}],
-  cache_static_manifest: "priv/static/cache_manifest.json",
+  http: [:inet6, port: System.get_env("PORT") || 4000],
+  url: [scheme: "http", host: System.get_env("HOST"), port: 80],
   server: true,
-  root: ".",
-  version: Application.spec(:phoenix_distillery, :vsn)
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  secret_key_base: System.get_env("SECRET_KEY_BASE")
+  # version: Application.spec(:phoenix_distillery, :vsn)
 
 # Do not print debug messages in production
 config :logger, level: :info
@@ -72,4 +72,4 @@ config :logger, level: :info
 
 # Finally import the config/prod.secret.exs which should be versioned
 # separately.
-import_config "prod.secret.exs"
+# import_config "prod.secret.exs"

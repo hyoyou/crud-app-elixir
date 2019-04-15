@@ -2,7 +2,7 @@ defmodule CrudAppWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :crud_app
 
   socket "/socket", CrudAppWeb.UserSocket,
-    websocket: true,
+    websocket: [timeout: 45_000],
     longpoll: false
 
   # Serve at "/" the static files from "priv/static" directory.
