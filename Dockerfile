@@ -1,3 +1,6 @@
+# ---------------------------------------------------------
+# Build Release
+# ---------------------------------------------------------
 ARG ALPINE_VERSION=3.9
 
 FROM elixir:1.8.1-alpine AS builder
@@ -61,11 +64,15 @@ RUN \
   tar -xzf ${APP_NAME}.tar.gz && \
   rm ${APP_NAME}.tar.gz
 
-# From this line onwards, we're in a new image, which will be the image used in production
+# ---------------------------------------------------------
+# Run Release
+# ---------------------------------------------------------
 FROM alpine:${ALPINE_VERSION}
 
 # The name of your application/release (required)
 ARG APP_NAME=crud_app
+
+EXPOSE 4000
 
 RUN apk update && \
     apk add --no-cache \
@@ -77,6 +84,6 @@ ENV REPLACE_OS_VARS=true \
 
 WORKDIR /opt/app
 
-COPY --from=builder /opt/built .
+COPY --from=builder /opt/built /opt/app/.
 
 CMD trap 'exit' INT; /opt/app/bin/${APP_NAME} foreground

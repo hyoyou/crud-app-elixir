@@ -8,18 +8,20 @@
 use Mix.Config
 
 config :crud_app, CrudApp.Repo,
-  database: "crud_app_repo",
-  username: "user",
-  password: "pass",
-  hostname: "db"
+database: System.get_env("POSTGRES_DB"),
+username: System.get_env("POSTGRES_USER"),
+password: System.get_env("POSTGRES_PASS"),
+hostname: System.get_env("POSTGRES_HOST"),
+pool: Ecto.Adapters.SQL.Sandbox,
+pool_size: 20
 
 config :crud_app,
   ecto_repos: [CrudApp.Repo]
 
 # Configures the endpoint
 config :crud_app, CrudAppWeb.Endpoint,
-  url: [host: "localhost"],
-  secret_key_base: "BqWrZFlIdxv3U6nrc3Lc4DQh+xHiNh3ACaE2+zKbbXP7DcKZZDjO9HAzrpmg+11H",
+  url: [host: System.get_env("HOST")],
+  secret_key_base: System.get_env("SECRET_KEY_BASE"),
   render_errors: [view: CrudAppWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: CrudApp.PubSub, adapter: Phoenix.PubSub.PG2]
 
