@@ -8,3 +8,10 @@ config :crud_app, CrudAppWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :crud_app, CrudApp.Repo,
+  username: "postgres",
+  password: "postgres",
+  database: "crud_app_test",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox
