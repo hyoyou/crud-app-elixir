@@ -8,12 +8,12 @@
 use Mix.Config
 
 config :crud_app, CrudApp.Repo,
-database: System.get_env("POSTGRES_DB"),
-username: System.get_env("POSTGRES_USER"),
-password: System.get_env("POSTGRES_PASS"),
-hostname: System.get_env("POSTGRES_HOST"),
-pool: Ecto.Adapters.SQL.Sandbox,
-pool_size: 20
+  database: System.get_env("POSTGRES_DB"),
+  username: System.get_env("POSTGRES_USER"),
+  password: System.get_env("POSTGRES_PASS"),
+  hostname: System.get_env("POSTGRES_HOST"),
+  pool: Ecto.Adapters.SQL.Sandbox,
+  pool_size: 20
 
 config :crud_app,
   ecto_repos: [CrudApp.Repo]
