@@ -47,3 +47,7 @@ npm-debug.log
 !.elasticbeanstalk/*.global.yml
 
 /volumes
+
+# Remove sensitive data from being uploded to source control 
+.env
+rel.env

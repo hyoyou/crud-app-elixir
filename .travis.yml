@@ -4,6 +4,19 @@ elixir:
   - 1.8.1
 env:
   - NODE_JS_VERSION=10.15.0
+  - MIX_ENV=prod
+  - HOST=localhost
+  - PGDATA=/var/lib/postgresql/data/pgdata
+  - RDS_DB_NAME=crud_app_prod
+  - RDS_USERNAME=ebroot
+  - RDS_PORT=5421
+  - POSTGRES_DB=crud_app_prod
+  - POSTGRES_HOST=postgres
+  - POSTGRES_USER=postgres
+  - PORT=5432
+  - LANG=en_US.UTF-8
+  - REPLACE_OS_VARS=true
+  - ERLANG_COOKIE=crud_app
 before_install:
   - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
   - nvm install 10.15.0
