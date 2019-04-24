@@ -3,8 +3,11 @@
     <h1>{{ msg }}</h1>
     <h3>Current Goals</h3>
       <div class="list-of-goals">
-        <ul id="current-goals" v-for="goal in goals" :key="goal.id">
-          <li>I want to {{ goal.activity }} in {{ goal.location }}.</li>
+        <ul id="current-goals">
+          <li v-for="goal in goals" :key="goal.id">
+            I want to {{ goal.activity }} in {{ goal.location }}.
+            <button id="achieved-btn" name="achieved" v-on:click.prevent="updateGoal(goal.id)"><i class="fas fa-check-circle"></i></button>
+          </li>
         </ul>
       </div>
     <h3>Add to the Bucket!</h3>
@@ -13,7 +16,7 @@
           I want to <input type="text" name="activity" v-model="activity" data-activity placeholder="insert activity here!"> 
           in <input type="text" name="location" v-model="location" data-location placeholder="insert location here!">.
 
-          <button type="submit" name="submit" v-on:click.prevent="postGoal">Add</button>
+          <button id="submit-btn" type="submit" name="submit" v-on:click.prevent="postGoal">Add</button>
         </div>
       </form>
   </div>
@@ -53,6 +56,9 @@ export default {
       this.activity = this.location = ""
       return getPromise
     },
+    updateGoal: function (goalId) {
+      console.log(goalId)
+    },
     fetchGoals: async function () {
       this.goals = []
 
@@ -65,18 +71,23 @@ export default {
 </script>
 
 <style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+  h3 {
+    margin: 40px 0 0;
+  }
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  li {
+    margin: 0 10px;
+  }
+  a {
+    color: #42b983;
+  }
+  button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
 </style>

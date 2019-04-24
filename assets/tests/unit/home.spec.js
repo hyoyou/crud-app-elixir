@@ -43,13 +43,13 @@ describe('BucketList.vue', () => {
       ]
     }
 
-    return expect(wrapper.vm.fetchGoals()).resolves.toEqual(expected);
+    expect(wrapper.vm.fetchGoals()).resolves.toEqual(expected);
   })
 
-  it('makes a POST request when the button is clicked', () => {
+  it('calls the postGoal function when the "submit" button is clicked', () => {
     const spy = jest.spyOn(BucketList.methods, 'postGoal')
     const wrapper = shallowMount(BucketList)
-    wrapper.find('button').trigger('click')
+    wrapper.find('#submit-btn').trigger('click')
 
     expect(spy).toHaveBeenCalled();
   })
@@ -68,21 +68,32 @@ describe('BucketList.vue', () => {
     expect(wrapper.vm.location).toEqual('awesome place')
   })
 
-  it('does not make a POST request when the button isn\'t clicked', () => {
+  it('does not call the postGoal function when the button isn\'t clicked', () => {
     const spy = jest.spyOn(BucketList.methods, 'postGoal')
     shallowMount(BucketList)
 
     expect(spy).not.toHaveBeenCalled()
   })
 
-  it('makes a call to the post action of the API when user fills out the form and the button is clicked', done => {
+  it('makes a call to the create action of the API when user fills out the form and the button is clicked', done => {
     const wrapper = shallowMount(BucketList)
     wrapper.find('[data-activity]').setValue('sample activity')
     wrapper.find('[data-location]').setValue('sample location')
-    wrapper.find('button').trigger('click')
+    wrapper.find('#submit-btn').trigger('click')
+
     wrapper.vm.$nextTick(() => {
       expect(wrapper.vm.goals).toEqual([{ activity: 'sample activity', location: 'sample location'}])
       done()
     })
+  })
+
+  it('calls the updateGoal function when button to mark "achieved" is clicked', async () => {
+    const spy = jest.spyOn(BucketList.methods, 'updateGoal')
+    const wrapper = shallowMount(BucketList)
+
+    await wrapper.vm.fetchGoals()
+    wrapper.find('#achieved-btn').trigger('click')
+
+    expect(spy).toHaveBeenCalled();
   })
 })
