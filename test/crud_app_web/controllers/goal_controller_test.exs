@@ -5,6 +5,7 @@ defmodule CrudAppWeb.GoalControllerTest do
 
   @create_attrs %{activity: "some activity", location: "some location", is_achieved: true}
   @invalid_attrs %{activity: nil, location: nil}
+  @update_attrs %{id: 1, is_achieved: true}
 
   def fixture(:goal) do
     {:ok, goal} = BucketList.create_goal(@create_attrs)
@@ -40,6 +41,15 @@ defmodule CrudAppWeb.GoalControllerTest do
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.goal_path(conn, :create), goal: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
+    end
+  end
+
+  describe "update goal" do
+    setup [:create_goal]
+
+    test "renders updated goals when a goal has been marked achieved", %{conn: conn, goal: goal} do
+      conn = put(conn, Routes.goal_path(conn, :update, goal), goal: @update_attrs)
+      assert redirected_to(conn) == Routes.goal_path(conn, :index_achieved)
     end
   end
 

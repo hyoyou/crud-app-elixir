@@ -8,6 +8,10 @@ defmodule CrudApp.BucketList do
     Repo.all(Goal)
   end
 
+  def list_achieved_goals do
+    Repo.get_by(Goal, is_achieved: true)
+  end
+
   def get_goal!(id), do: Repo.get!(Goal, id)
 
   def create_goal(attrs \\ %{}) do

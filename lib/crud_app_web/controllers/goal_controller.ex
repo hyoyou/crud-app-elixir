@@ -8,7 +8,12 @@ defmodule CrudAppWeb.GoalController do
 
   def index(conn, _params) do
     goals = BucketList.list_goals()
-    render(conn, "index.json", goals: goals)
+    render(conn, goals: goals)
+  end
+
+  def achieved_index(conn, _params) do
+    goals = BucketList.list_achieved_goals()
+    render(conn, goals: goals)
   end
 
   def create(conn, %{"goal" => goal_params}) do
@@ -20,8 +25,16 @@ defmodule CrudAppWeb.GoalController do
     end
   end
 
+  def update(conn, %{"goal" => goal_params}) do
+    goal = BucketList.get_goal!(goal_params.id)
+
+    with {:ok, %Goal{} = goal} <- BucketList.update_goal(goal, goal_params) do
+      
+    end
+  end
+
   def show(conn, %{"id" => id}) do
     goal = BucketList.get_goal!(id)
-    render(conn, "show.json", goal: goal)
+    render(conn, goal: goal)
   end
 end

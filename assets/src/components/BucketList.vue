@@ -6,7 +6,7 @@
         <ul id="current-goals">
           <li v-for="goal in goals" :key="goal.id" :id="'goal-' + goal.id">
             I want to {{ goal.activity }} in {{ goal.location }}.
-            <button id="achieved-btn" name="achieved" v-on:click.prevent="updateGoal(goal.id)"><i class="fas fa-check-circle"></i></button>
+            <button :id="'achieved-btn-' + goal.id" v-on:click.prevent="updateGoal(goal.id)"><i class="fas fa-check-circle"></i></button>
           </li>
         </ul>
       </div>
@@ -43,6 +43,13 @@ export default {
     this.fetchGoals()
   },
   methods: {
+    fetchGoals: async function () {
+      this.goals = []
+
+      let goalsData = await axios.get(this.uri)
+      this.goals = goalsData.data.data
+      return this.goals
+    },
     postGoal: async function () {
       this.newGoal = { activity: this.activity, location: this.location }
       const getPromise = await axios.post(this.uri,
@@ -56,15 +63,18 @@ export default {
       this.activity = this.location = ""
       return getPromise
     },
-    updateGoal: function (goalId) {
-      console.log(goalId)
-    },
-    fetchGoals: async function () {
-      this.goals = []
+    updateGoal: async function (goalId) {
+      let patchUrl = this.uri + "/" + goalId
 
-      let goalsData = await axios.get(this.uri)
-      this.goals = goalsData.data.data
-      return this.goals
+      const updatedGoals = await axios.patch(patchUrl,
+        { goal: { is_achieved: true } },
+        { headers: {
+          'Content-type': 'application/json',
+        }}
+      )
+
+      this.goals = updatedGoals
+      return updatedGoals
     }
   }
 }
