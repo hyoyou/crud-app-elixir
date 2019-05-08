@@ -141,7 +141,7 @@ describe('BucketList.vue', () => {
       const goal = axios.getLastGoal();
       const header = axios.getLastHeader();
       expect(uri).toEqual('/api/goals/1');
-      expect(goal).toEqual({"goal": { is_achieved: true }});
+      expect(goal).toEqual({"goal": { id: 1, is_achieved: true }});
       expect(header).toEqual({"headers": {'Content-type': 'application/json'}});
       done()
     })

@@ -67,7 +67,7 @@ export default {
       let patchUrl = this.uri + "/" + goalId
 
       const updatedGoals = await axios.patch(patchUrl,
-        { goal: { is_achieved: true } },
+        { goal: { id: goalId, is_achieved: true } },
         { headers: {
           'Content-type': 'application/json',
         }}

@@ -26,10 +26,13 @@ defmodule CrudAppWeb.GoalController do
   end
 
   def update(conn, %{"goal" => goal_params}) do
-    goal = BucketList.get_goal!(goal_params.id)
+    %{ "id" => id, "is_achieved" => is_achieved} = goal_params
+
+    goal = BucketList.get_goal!(id)
 
     with {:ok, %Goal{} = goal} <- BucketList.update_goal(goal, goal_params) do
-      
+      conn
+      |> put_status(:updated)
     end
   end
 
