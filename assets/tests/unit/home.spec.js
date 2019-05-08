@@ -19,7 +19,7 @@ describe('BucketList.vue', () => {
 
   it('renders a form to add to the bucket list', () => {
     const wrapper = shallowMount(BucketList)
-    expect(wrapper.html()).toContain('<form>')
+    expect(wrapper.html()).toContain('<form id="new-goal">')
   })
 
   it('makes a GET request to the index action of the API when the page is rendered', () => {
@@ -52,8 +52,12 @@ describe('BucketList.vue', () => {
     expect(wrapper.vm.fetchGoals()).resolves.toEqual(expected);
   })
 
-  it('calls the postGoal function when the "submit" button is clicked', () => {
-    const spy = jest.spyOn(BucketList.methods, 'postGoal');
+  it('displays an error when there is a problem fetching the data', () => {
+
+  })
+
+  it('calls the form validator when the "submit" button is clicked', () => {
+    const spy = jest.spyOn(BucketList.methods, 'checkForm');
     const wrapper = shallowMount(BucketList);
     wrapper.find('#submit-btn').trigger('click');
 
@@ -74,11 +78,48 @@ describe('BucketList.vue', () => {
     expect(wrapper.vm.location).toEqual('awesome place');
   })
 
-  it('does not call the postGoal function when the button isn\'t clicked', () => {
-    const spy = jest.spyOn(BucketList.methods, 'postGoal')
+  it('does not call the form validator or send off a create action when the button isn\'t clicked', () => {
+    const spyValidate = jest.spyOn(BucketList.methods, 'checkForm');
+    const spyPost = jest.spyOn(BucketList.methods, 'postGoal')
     shallowMount(BucketList)
 
-    expect(spy).not.toHaveBeenCalled()
+    expect(spyValidate).not.toHaveBeenCalled()
+    expect(spyPost).not.toHaveBeenCalled()
+  })
+
+  it('displays an error when activity is missing in the form', (done) => {
+    const wrapper = shallowMount(BucketList)
+    wrapper.find('[data-location]').setValue('sample location');
+    wrapper.find('#submit-btn').trigger('click');
+
+    wrapper.vm.$nextTick(() => {
+      expect(wrapper.vm.errors.length).toEqual(1)
+      expect(wrapper.text()).toMatch('Please correct the following error(s): Activity is required.')
+      done()
+    })
+  })
+
+  it('displays an error when location is missing in the form', (done) => {
+    const wrapper = shallowMount(BucketList)
+    wrapper.find('[data-activity]').setValue('sample activity');
+    wrapper.find('#submit-btn').trigger('click');
+
+    wrapper.vm.$nextTick(() => {
+      expect(wrapper.vm.errors.length).toEqual(1)
+      expect(wrapper.text()).toMatch('Please correct the following error(s): Location is required.')
+      done()
+    })
+  })
+
+  it('displays an error when both activity and location are missing in the form', (done) => {
+    const wrapper = shallowMount(BucketList)
+    wrapper.find('#submit-btn').trigger('click');
+
+    wrapper.vm.$nextTick(() => {
+      expect(wrapper.vm.errors.length).toEqual(2)
+      expect(wrapper.text()).toMatch('Please correct the following error(s): Activity is required.Location is required.')
+      done()
+    })
   })
 
   it('makes a POST request to the correct API endpoint with correct data for a new goal', (done) => {

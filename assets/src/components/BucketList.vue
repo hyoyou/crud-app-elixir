@@ -11,13 +11,34 @@
         </ul>
       </div>
     <h3>Add to the Bucket!</h3>
-      <form>
-        <div id="new-goal">
-          I want to <input type="text" name="activity" v-model="activity" data-activity placeholder="insert activity here!"> 
-          in <input type="text" name="location" v-model="location" data-location placeholder="insert location here!">.
+      <form id="new-goal">
 
-          <button id="submit-btn" type="submit" name="submit" v-on:click.prevent="postGoal">Add</button>
-        </div>
+        <p id="errors" v-if="errors.length">
+          <b>Please correct the following error(s):</b>
+          <ul>
+            <li v-for="error in errors">{{ error }}</li>
+          </ul>
+        </p>
+
+        <p>
+          I want to 
+          <input 
+            type="text" 
+            name="activity" 
+            v-model="activity" 
+            data-activity placeholder="insert activity here!"
+          > 
+          in 
+          <input 
+            type="text" 
+            name="location" 
+            v-model="location" 
+            data-location placeholder="insert location here!"
+          >
+          .
+
+          <button id="submit-btn" type="submit" name="submit" v-on:click.prevent="checkForm">Add</button>
+        </p>
       </form>
   </div>
 </template>
@@ -35,7 +56,7 @@ export default {
       goals: [],
       activity: "",
       location: "",
-      error: null,
+      errors: [],
       uri: process.env.VUE_APP_API_URI
     }
   },
@@ -75,6 +96,21 @@ export default {
 
       this.goals = updatedGoals
       return updatedGoals
+    },
+    checkForm: function (e) {
+      if (this.activity !== "" && this.location !== "") {
+        this.postGoal();
+      }
+
+      this.errors = [];
+
+      if (this.activity === "") {
+        this.errors.push('Activity is required.');
+      }
+
+      if (this.location === "") {
+        this.errors.push('Location is required.');
+      }
     }
   }
 }
@@ -99,5 +135,9 @@ export default {
     border: none;
     padding: 0;
     cursor: pointer;
+  }
+  #errors {
+    color: red;
+    font-size: 0.9em;
   }
 </style>
