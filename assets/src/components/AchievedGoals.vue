@@ -2,12 +2,11 @@
   <div class="index">
     <h1>Achieved Goals</h1>
     <div class="list-of-achieved-goals">
-        <ul id="achieved-goals">
-          <li v-for="goal in goals" :key="goal.id" :id="'goal-' + goal.id">
-            <i class="fas fa-check-circle"></i> {{ goal.activity }} in {{ goal.location }}.
-          </li>
-        </ul>
-      </div>
+      <ul id="achieved-goals">
+        <li v-for="goal in goals" :key="goal.id" :id="'goal-' + goal.id">
+          <i class="fas fa-check-circle"></i> {{ goal.activity }} in {{ goal.location }}.
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -32,9 +31,10 @@ export default {
   },
   methods: {
     fetchAchievedGoals: async function () {
+      let achievedIndexUrl = this.uri + "/achieved"
       this.goals = []
 
-      let goalsData = await axios.get(this.uri)
+      let goalsData = await axios.get(achievedIndexUrl)
       this.goals = goalsData.data.data
       return this.goals
     }

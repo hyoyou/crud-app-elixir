@@ -1,6 +1,6 @@
-import { shallowMount } from '@vue/test-utils'
-import BucketList from '@/components/BucketList.vue'
-jest.mock('axios')
+import { shallowMount } from '@vue/test-utils';
+import BucketList from '@/components/BucketList.vue';
+jest.mock('axios');
 import axios from 'axios';
 
 beforeEach(() => {
@@ -111,7 +111,7 @@ describe('BucketList.vue', () => {
     })
   })
 
-  it('displays an error when both activity and location are missing in the form', (done) => {
+  it('displays errors when both activity and location are missing in the form', (done) => {
     const wrapper = shallowMount(BucketList)
     wrapper.find('#submit-btn').trigger('click');
 
@@ -184,25 +184,6 @@ describe('BucketList.vue', () => {
       expect(uri).toEqual('/api/goals/1');
       expect(goal).toEqual({"goal": { id: 1, is_achieved: true }});
       expect(header).toEqual({"headers": {'Content-type': 'application/json'}});
-      done()
-    })
-  })
-
-  it('makes a call to the update action in the API when button to mark "achieved" is clicked and returns only current goals', async (done) => {
-    const wrapper = shallowMount(BucketList)
-
-    await wrapper.vm.fetchGoals()
-    wrapper.find('#achieved-btn-1').trigger('click')
-
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.goals).toEqual([
-        { 
-          "id": 2,
-          "activity": "feed flamingos",
-          "is_achieved": false,
-          "location": "Aruba"
-        }
-      ])
       done()
     })
   })

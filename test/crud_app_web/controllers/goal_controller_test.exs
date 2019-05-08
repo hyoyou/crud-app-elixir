@@ -2,10 +2,10 @@ defmodule CrudAppWeb.GoalControllerTest do
   use CrudAppWeb.ConnCase
 
   alias CrudApp.BucketList
+  alias CrudApp.BucketList.Goal
 
-  @create_attrs %{activity: "some activity", location: "some location", is_achieved: true}
+  @create_attrs %{activity: "some activity", location: "some location", is_achieved: false}
   @invalid_attrs %{activity: nil, location: nil}
-  @update_attrs %{id: 1, is_achieved: true}
 
   def fixture(:goal) do
     {:ok, goal} = BucketList.create_goal(@create_attrs)
@@ -17,9 +17,16 @@ defmodule CrudAppWeb.GoalControllerTest do
   end
 
   describe "index" do
-    test "lists all goals", %{conn: conn} do
+    test "is empty when no goals are created", %{conn: conn} do
       conn = get(conn, Routes.goal_path(conn, :index))
       assert json_response(conn, 200)["data"] == []
+    end
+
+    test "list all current goals", %{conn: conn} do
+      conn = post(conn, Routes.goal_path(conn, :create), goal: @create_attrs)
+      goal = conn.assigns.goal
+      conn = get(conn, Routes.goal_path(conn, :index))
+      assert json_response(conn, 200)["data"] == [%{"activity" => "some activity", "id" => goal.id, "is_achieved" => false, "location" => "some location"}]
     end
   end
 
@@ -34,7 +41,7 @@ defmodule CrudAppWeb.GoalControllerTest do
                "id" => id,
                "activity" => "some activity",
                "location" => "some location",
-               "is_achieved" => true
+               "is_achieved" => false
              } = json_response(conn, 200)["data"]
     end
 
@@ -48,9 +55,12 @@ defmodule CrudAppWeb.GoalControllerTest do
     setup [:create_goal]
 
     test "renders updated goals when a goal has been marked achieved", %{conn: conn, goal: goal} do
-      conn = put(conn, Routes.goal_path(conn, :update, goal), goal: @update_attrs)
-      assert redirected_to(conn) == Routes.goal_path(conn, :index_achieved)
+      conn = put(conn, Routes.goal_path(conn, :update, goal.id), goal: %{id: goal.id, is_achieved: true})
+      assert json_response(conn, 200)["data"]
     end
+  end
+
+  describe "achieved index" do
   end
 
   defp create_goal(_) do

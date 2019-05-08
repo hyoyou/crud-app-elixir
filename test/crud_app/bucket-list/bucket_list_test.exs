@@ -6,8 +6,8 @@ defmodule CrudApp.BucketListTest do
   describe "goals" do
     alias CrudApp.BucketList.Goal
 
-    @valid_attrs %{activity: "some activity", is_achieved: true, location: "some location"}
-    @update_attrs %{activity: "some updated activity", is_achieved: false, location: "some updated location"}
+    @valid_attrs %{activity: "some activity", is_achieved: false, location: "some location"}
+    @update_attrs %{activity: "some updated activity", is_achieved: true, location: "some updated location"}
     @invalid_attrs %{activity: nil, is_achieved: nil, location: nil}
 
     def goal_fixture(attrs \\ %{}) do
@@ -32,7 +32,7 @@ defmodule CrudApp.BucketListTest do
     test "create_goal/1 with valid data creates a goal" do
       assert {:ok, %Goal{} = goal} = BucketList.create_goal(@valid_attrs)
       assert goal.activity == "some activity"
-      assert goal.is_achieved == true
+      assert goal.is_achieved == false
       assert goal.location == "some location"
     end
 

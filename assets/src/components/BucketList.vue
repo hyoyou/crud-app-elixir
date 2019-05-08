@@ -6,7 +6,7 @@
         <ul id="current-goals">
           <li v-for="goal in goals" :key="goal.id" :id="'goal-' + goal.id">
             I want to {{ goal.activity }} in {{ goal.location }}.
-            <button :id="'achieved-btn-' + goal.id" v-on:click.prevent="updateGoal(goal.id)"><i class="fas fa-check-circle"></i></button>
+            <button :id="'achieved-btn-' + goal.id" name="achieved-btn" v-on:click.prevent="updateGoal(goal.id)"><i class="fas fa-check-circle"></i></button>
           </li>
         </ul>
       </div>
@@ -16,7 +16,7 @@
         <p id="errors" v-if="errors.length">
           <b>Please correct the following error(s):</b>
           <ul>
-            <li v-for="error in errors">{{ error }}</li>
+            <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
           </ul>
         </p>
 
@@ -87,17 +87,16 @@ export default {
     updateGoal: async function (goalId) {
       let patchUrl = this.uri + "/" + goalId
 
-      const updatedGoals = await axios.patch(patchUrl,
+      await axios.patch(patchUrl,
         { goal: { id: goalId, is_achieved: true } },
         { headers: {
           'Content-type': 'application/json',
         }}
       )
 
-      this.goals = updatedGoals
-      return updatedGoals
+      this.$router.push("achieved")
     },
-    checkForm: function (e) {
+    checkForm: function () {
       if (this.activity !== "" && this.location !== "") {
         this.postGoal();
       }
@@ -130,7 +129,7 @@ export default {
   a {
     color: #42b983;
   }
-  button {
+  button[name="achieved-btn"] {
     background: none;
     border: none;
     padding: 0;

@@ -25,10 +25,10 @@ const mockPatch = jest.fn((uri, goal, header) => {
   setLastHeader(header);
   return [
     { 
-      "id": 2,
-      "activity": "feed flamingos",
-      "is_achieved": false,
-      "location": "Aruba"
+      id: 1,
+      activity: 'swim with sharks',
+      is_achieved: true,
+      location: 'the Bahamas' 
     }
   ]
 })
