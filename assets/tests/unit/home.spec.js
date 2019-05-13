@@ -202,4 +202,60 @@ describe('BucketList.vue', () => {
       done()
     })
   })
+
+  it('calls the deleteGoal function when button to mark "delete" is clicked', async () => {
+    const spy = jest.spyOn(BucketList.methods, 'deleteGoal');
+    const wrapper = shallowMount(BucketList);
+
+    await wrapper.vm.fetchGoals();
+    wrapper.find('#delete-btn-1').trigger('click');
+
+    expect(spy).toHaveBeenCalled();
+  })
+
+  it('receives the id of the goal when "delete" button is clicked', async () => {
+    const spy = jest.spyOn(BucketList.methods, 'deleteGoal');
+    const wrapper = shallowMount(BucketList);
+
+    await wrapper.vm.fetchGoals();
+    wrapper.find('#delete-btn-1').trigger('click');
+
+    expect(spy).toHaveBeenCalledWith(1);
+  })
+
+  it('makes a DELETE request to the correct API endpoint with correct id to delete a goal', async (done) => {
+    const wrapper = shallowMount(BucketList);
+    
+    await wrapper.vm.fetchGoals();
+    wrapper.find('#delete-btn-1').trigger('click');
+
+    wrapper.vm.$nextTick(() => {
+      const uri = axios.getLastURI();
+      const goal = axios.getLastGoal();
+      const header = axios.getLastHeader();
+      expect(uri).toEqual('/api/goals/1');
+      expect(goal).toEqual({"goal": { id: 1 }});
+      expect(header).toEqual({"headers": {'Content-type': 'application/json'}});
+      done()
+    })
+  })
+
+  it('rerenders current goals in the Current Goals index page when a goal is deleted', async (done) => {
+    const wrapper = shallowMount(BucketList)
+    
+    await wrapper.vm.fetchGoals();
+    wrapper.find('#delete-btn-1').trigger('click');
+
+    await wrapper.vm.deleteGoal(1);
+
+    wrapper.vm.$nextTick(() => {
+      expect(wrapper.vm.goals).toEqual(
+        { id: 2,
+          activity: 'feed flamingos',
+          is_achieved: false,
+          location: 'Aruba' }
+      )
+      done()
+    })
+  })
 })

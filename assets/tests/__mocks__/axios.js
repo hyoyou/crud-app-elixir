@@ -49,6 +49,26 @@ const mockPatch = jest.fn((uri, goal, header) => {
   })
 })
 
+const mockDelete = jest.fn((uri, goal, header) => {
+  setLastURI(uri);
+  setLastGoal(goal);
+  setLastHeader(header);
+  return new Promise((resolve, reject) => {
+    resolve(
+      { 
+        data: {
+          data: {
+            id: 2,
+            activity: 'feed flamingos',
+            is_achieved: false,
+            location: 'Aruba'
+          }
+        }
+      }
+    )
+  })
+})
+
 let lastURI;
 const setLastURI = (uri) => lastURI = uri;
 const getLastURI = () => { return lastURI };
@@ -65,6 +85,7 @@ module.exports = {
   get: mockGet,
   post: mockPost,
   patch: mockPatch,
+  delete: mockDelete,
   create: jest.fn(function() {
     return this
   }),
