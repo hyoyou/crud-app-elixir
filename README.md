@@ -9,6 +9,7 @@
 * Docker 2
 * npm to install Node.js dependencies
 
+
 ## Setup
 * Create Distillery release with:
 
@@ -22,7 +23,7 @@ $ mix release
 $ mix deps.get
 ```
 
-* Create and migrate your database with:
+* Create and migrate your database with (May need to also run with MIX_ENV=prod and/or MIX_ENV=test, depending on environment you want to set it up for):
 
 ```
 $ mix ecto.setup
@@ -42,6 +43,7 @@ $ cd assets && npm install
 $ make build
 ```
 
+
 ## Running the Tests
 * To run Phoenix tests:
 
@@ -55,7 +57,14 @@ $ mix test
 $ cd assets && npm run test:unit
 ```
 
+
 ## Running the Server
+
+* To run the database in the background with Docker:
+
+```
+$ docker-compose up -d postgres
+```
 
 * To start your Phoenix server: 
 
@@ -65,9 +74,14 @@ $ mix phx.server
 & navigate to localhost:[port #] that is output to terminal
 
 
+## Stopping the Server
 
-* To use Docker, run Makefile run task with:
+* To stop the database running in the background:
 
 ```
-$ make run
+$ docker-compose down
 ```
+
+* To stop the Phoenix server:
+
+Hit `ctrl` + `C` twice
