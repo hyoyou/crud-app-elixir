@@ -2,7 +2,6 @@ defmodule CrudAppWeb.GoalControllerTest do
   use CrudAppWeb.ConnCase
 
   alias CrudApp.BucketList
-  alias CrudApp.BucketList.Goal
 
   @create_attrs %{activity: "some activity", location: "some location", is_achieved: false}
   @invalid_attrs %{activity: nil, location: nil}
