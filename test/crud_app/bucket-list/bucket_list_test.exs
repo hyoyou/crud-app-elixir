@@ -29,7 +29,6 @@ defmodule CrudApp.BucketListTest do
     end
 
     test "list_achieved_goals/0 returns empty list when no achieved goals exist" do
-      goal = goal_fixture()
       assert BucketList.list_achieved_goals == []
     end
 
