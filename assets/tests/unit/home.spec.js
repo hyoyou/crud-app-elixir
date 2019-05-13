@@ -1,4 +1,4 @@
-import { mount, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import AchievedGoals from '@/components/AchievedGoals.vue';
 import BucketList from '@/components/BucketList.vue';
 jest.mock('axios');
