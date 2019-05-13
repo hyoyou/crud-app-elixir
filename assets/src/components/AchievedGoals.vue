@@ -16,9 +16,6 @@ import axios from 'axios'
 
 export default {
   name: 'AchievedGoals',
-  props: {
-    msg: String
-  },
   data () {
     return {
       goals: [],
