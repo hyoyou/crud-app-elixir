@@ -1,0 +1,12 @@
+{
+  "data": {
+    "data": [
+      { 
+        "id": 1,
+        "activity": "swim with sharks",
+        "is_achieved": true,
+        "location": "the Bahamas"
+      }
+    ]
+  }
+}

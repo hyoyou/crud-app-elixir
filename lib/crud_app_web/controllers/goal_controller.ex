@@ -12,9 +12,7 @@ defmodule CrudAppWeb.GoalController do
   end
 
   def achieved_index(conn, _params) do
-    IO.puts("in here")
     achieved_goals = BucketList.list_achieved_goals()
-    IO.inspect(achieved_goals)
     render(conn, "index.json", goals: achieved_goals)
   end
 

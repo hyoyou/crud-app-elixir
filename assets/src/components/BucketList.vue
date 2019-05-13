@@ -16,7 +16,7 @@
         <p id="errors" v-if="errors.length">
           <b>Please correct the following error(s):</b>
           <ul>
-            <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
+            <li v-for="(error, index) in errors" v-bind:key="'error-' + index">{{ error }}</li>
           </ul>
         </p>
 
@@ -67,22 +67,34 @@ export default {
     fetchGoals: async function () {
       this.goals = []
 
-      let goalsData = await axios.get(this.uri)
-      this.goals = goalsData.data.data
+      await axios.get(this.uri)
+      .then( response => {
+        this.goals = response.data.data
+      })
+      .catch( error => {
+        this.errors.push(error)
+      })
+
       return this.goals
     },
     postGoal: async function () {
       this.newGoal = { activity: this.activity, location: this.location }
-      const getPromise = await axios.post(this.uri,
+      
+      await axios.post(this.uri,
         { goal: this.newGoal },
         { headers: {
           'Content-type': 'application/json',
         }}
       )
+      .then( response => {
+        let activityCreated = { activity: response.data.data.activity, location: response.data.data.location }
+        this.goals.push(activityCreated)
+      })
+      .catch( error => {
+        this.errors.push(error)
+      })
 
-      this.goals.push(this.newGoal)
-      this.activity = this.location = ""
-      return getPromise
+      this.activity = this.location = "";
     },
     updateGoal: async function (goalId) {
       let patchUrl = this.uri + "/" + goalId

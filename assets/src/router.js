@@ -14,7 +14,7 @@ export default new Router({
     },
     {
       path: '/achieved',
-      name: 'achieved-goals',
+      name: 'AchievedGoals',
       component: AchievedGoals
     }
   ]

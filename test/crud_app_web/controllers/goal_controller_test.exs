@@ -61,6 +61,13 @@ defmodule CrudAppWeb.GoalControllerTest do
   end
 
   describe "achieved index" do
+    setup [:create_goal]
+
+    test "list all achieved goals", %{conn: conn, goal: goal} do
+      conn = put(conn, Routes.goal_path(conn, :update, goal.id), goal: %{id: goal.id, is_achieved: true})
+      conn = get(conn, Routes.goal_path(conn, :achieved_index))
+      assert json_response(conn, 200)["data"] == [%{"activity" => "some activity", "id" => goal.id, "is_achieved" => true, "location" => "some location"}]
+    end
   end
 
   defp create_goal(_) do

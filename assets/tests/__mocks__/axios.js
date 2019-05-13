@@ -2,6 +2,17 @@ const fs = require('fs')
 
 const mockGet = jest.fn((uri) => {
   setLastURI(uri);
+  if (uri === "/api/goals/achieved") {
+    return new Promise((resolve, reject) => {
+      fs.readFile(`./tests/__mockData__${uri}.json`, (err, data) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(JSON.parse(data))
+      })
+    })
+  }
+
   return new Promise((resolve, reject) => {
     fs.readFile(`./tests/__mockData__${uri}.json`, (err, data) => {
       if (err) {
@@ -16,7 +27,10 @@ const mockPost = jest.fn((uri, goal, header) => {
   setLastURI(uri);
   setLastGoal(goal);
   setLastHeader(header);
-  return goal.goal
+
+  return new Promise((resolve, reject) => {
+    resolve({ data: { data: { activity: `${goal.goal.activity}`, location: `${goal.goal.location}` }}})
+  })
 })
 
 const mockPatch = jest.fn((uri, goal, header) => {
