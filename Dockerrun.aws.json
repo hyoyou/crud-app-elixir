@@ -1,23 +1,23 @@
 {
-    "AWSEBDockerrunVersion": 1,
-    "volumes": [
-      {
-        "name": "crud_app",
-        "host": {
-          "sourcePath": "/app"
+  "AWSEBDockerrunVersion": 1,
+  "volumes": [
+    {
+      "name": "crud_app",
+      "host": {
+        "sourcePath": "/app"
+      }
+    }
+  ],
+  "containerDefinitions": [
+    {
+      "name": "crud_app",
+      "essential": true,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 4000
         }
-      }
-    ],
-    "containerDefinitions": [
-      {
-        "name": "crud_app",
-        "essential": true,
-        "portMappings": [
-          {
-            "hostPort": 80,
-            "containerPort": 4000
-          }
-        ]
-      }
-    ]
-  }
+      ]
+    }
+  ]
+}
