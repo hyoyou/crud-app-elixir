@@ -87,8 +87,7 @@ export default {
         }}
       )
       .then( response => {
-        let activityCreated = { activity: response.data.data.activity, location: response.data.data.location }
-        this.goals.push(activityCreated)
+        this.goals.push(response.data.data)
       })
       .catch( error => {
         this.errors.push(error)
