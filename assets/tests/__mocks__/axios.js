@@ -37,14 +37,16 @@ const mockPatch = jest.fn((uri, goal, header) => {
   setLastURI(uri);
   setLastGoal(goal);
   setLastHeader(header);
-  return [
-    { 
-      id: 1,
-      activity: 'swim with sharks',
-      is_achieved: true,
-      location: 'the Bahamas' 
-    }
-  ]
+  return new Promise((resolve, reject) => {
+    resolve([
+      { 
+        id: 1,
+        activity: 'swim with sharks',
+        is_achieved: true,
+        location: 'the Bahamas' 
+      }
+    ])
+  })
 })
 
 let lastURI;

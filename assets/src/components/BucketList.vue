@@ -86,14 +86,14 @@ export default {
           'Content-type': 'application/json',
         }}
       )
-      .then( response => {
+      .then(response => {
         this.goals.push(response.data.data)
       })
-      .catch( error => {
+      .catch(error => {
         this.errors.push(error)
       })
 
-      this.activity = this.location = "";
+      this.activity = this.location = ""
     },
     updateGoal: async function (goalId) {
       let patchUrl = this.uri + "/" + goalId
@@ -104,8 +104,12 @@ export default {
           'Content-type': 'application/json',
         }}
       )
-
-      this.$router.push("achieved")
+      .then(response => {
+        this.$router.push("achieved")
+      })
+      .catch(error => {
+        this.errors.push(error)
+      })
     },
     checkForm: function () {
       if (this.activity !== "" && this.location !== "") {
