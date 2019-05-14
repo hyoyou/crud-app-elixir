@@ -16,13 +16,10 @@ import axios from 'axios'
 
 export default {
   name: 'AchievedGoals',
-  props: {
-    msg: String
-  },
   data () {
     return {
       goals: [],
-      error: null,
+      error: [],
       uri: process.env.VUE_APP_API_URI
     }
   },
@@ -32,11 +29,14 @@ export default {
   methods: {
     fetchAchievedGoals: async function () {
       let achievedIndexUrl = this.uri + "/achieved"
-      this.goals = []
 
-      let goalsData = await axios.get(achievedIndexUrl)
-      this.goals = goalsData.data.data
-      return this.goals
+      await axios.get(achievedIndexUrl)
+      .then(response => {
+        this.goals = response.data.data
+      })
+      .catch(error => {
+        this.errors.push(error)
+      })
     }
   }
 }

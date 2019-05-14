@@ -7,6 +7,7 @@
           <li v-for="goal in goals" :key="goal.id" :id="'goal-' + goal.id">
             I want to {{ goal.activity }} in {{ goal.location }}.
             <button :id="'achieved-btn-' + goal.id" name="achieved-btn" v-on:click.prevent="updateGoal(goal.id)"><i class="fas fa-check-circle"></i></button>
+            <button :id="'delete-btn-' + goal.id" name="delete-btn" v-on:click.prevent="deleteGoal(goal.id)"><i class="fas fa-trash"></i></button>
           </li>
         </ul>
       </div>
@@ -65,17 +66,13 @@ export default {
   },
   methods: {
     fetchGoals: async function () {
-      this.goals = []
-
       await axios.get(this.uri)
-      .then( response => {
+      .then(response => {
         this.goals = response.data.data
       })
-      .catch( error => {
+      .catch(error => {
         this.errors.push(error)
       })
-
-      return this.goals
     },
     postGoal: async function () {
       this.newGoal = { activity: this.activity, location: this.location }
@@ -106,6 +103,22 @@ export default {
       )
       .then(response => {
         this.$router.push("achieved")
+      })
+      .catch(error => {
+        this.errors.push(error)
+      })
+    },
+    deleteGoal: async function (goalId) {
+      let deleteUrl = this.uri + "/" + goalId
+
+      await axios.delete(deleteUrl,
+        { goal: { id: goalId } },
+        { headers: {
+          'Content-type': 'application/json',
+        }}
+      )
+      .then(response => {
+        this.goals = response.data.data
       })
       .catch(error => {
         this.errors.push(error)
@@ -144,10 +157,10 @@ export default {
   a {
     color: #42b983;
   }
-  button[name="achieved-btn"] {
+  button[name="achieved-btn"], button[name="delete-btn"] {
     background: none;
     border: none;
-    padding: 0;
+    padding: 0, 1.5em;
     cursor: pointer;
   }
   #errors {
