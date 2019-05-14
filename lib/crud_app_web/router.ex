@@ -16,6 +16,7 @@ defmodule CrudAppWeb.Router do
   scope "/api", CrudAppWeb do
     pipe_through :api
     
+    get "/goals/achieved", GoalController, :achieved_index
     resources "/goals", GoalController
   end
 

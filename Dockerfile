@@ -5,8 +5,6 @@ ARG ALPINE_VERSION=3.9
 
 FROM elixir:1.8.1-alpine AS builder
 
-EXPOSE 4000
-
 # The following are build arguments used to change variable parts of the image.
 # The name of your application/release (required)
 ARG APP_NAME=crud_app

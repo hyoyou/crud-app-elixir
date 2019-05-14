@@ -2,8 +2,9 @@ defmodule CrudAppWeb.GoalControllerTest do
   use CrudAppWeb.ConnCase
 
   alias CrudApp.BucketList
+  alias CrudApp.BucketList.Goal
 
-  @create_attrs %{activity: "some activity", location: "some location", is_achieved: true}
+  @create_attrs %{activity: "some activity", location: "some location", is_achieved: false}
   @invalid_attrs %{activity: nil, location: nil}
 
   def fixture(:goal) do
@@ -16,9 +17,16 @@ defmodule CrudAppWeb.GoalControllerTest do
   end
 
   describe "index" do
-    test "lists all goals", %{conn: conn} do
+    test "is empty when no goals are created", %{conn: conn} do
       conn = get(conn, Routes.goal_path(conn, :index))
       assert json_response(conn, 200)["data"] == []
+    end
+
+    test "list all current goals", %{conn: conn} do
+      conn = post(conn, Routes.goal_path(conn, :create), goal: @create_attrs)
+      goal = conn.assigns.goal
+      conn = get(conn, Routes.goal_path(conn, :index))
+      assert json_response(conn, 200)["data"] == [%{"activity" => "some activity", "id" => goal.id, "is_achieved" => false, "location" => "some location"}]
     end
   end
 
@@ -33,13 +41,32 @@ defmodule CrudAppWeb.GoalControllerTest do
                "id" => id,
                "activity" => "some activity",
                "location" => "some location",
-               "is_achieved" => true
+               "is_achieved" => false
              } = json_response(conn, 200)["data"]
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.goal_path(conn, :create), goal: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
+    end
+  end
+
+  describe "update goal" do
+    setup [:create_goal]
+
+    test "renders updated goals when a goal has been marked achieved", %{conn: conn, goal: goal} do
+      conn = put(conn, Routes.goal_path(conn, :update, goal.id), goal: %{id: goal.id, is_achieved: true})
+      assert json_response(conn, 200)["data"]
+    end
+  end
+
+  describe "achieved index" do
+    setup [:create_goal]
+
+    test "list all achieved goals", %{conn: conn, goal: goal} do
+      conn = put(conn, Routes.goal_path(conn, :update, goal.id), goal: %{id: goal.id, is_achieved: true})
+      conn = get(conn, Routes.goal_path(conn, :achieved_index))
+      assert json_response(conn, 200)["data"] == [%{"activity" => "some activity", "id" => goal.id, "is_achieved" => true, "location" => "some location"}]
     end
   end
 
