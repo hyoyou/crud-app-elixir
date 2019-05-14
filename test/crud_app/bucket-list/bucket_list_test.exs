@@ -63,5 +63,21 @@ defmodule CrudApp.BucketListTest do
       goal = goal_fixture()
       assert {:error, %Ecto.Changeset{}} = BucketList.update_goal(goal, @invalid_attrs)
     end
+
+    test "delete_goal/1 with valid id deletes a goal" do
+      goal = goal_fixture()
+      assert {:ok, %Goal{} = goal} = BucketList.delete_goal(goal)
+      assert_raise Ecto.NoResultsError, fn ->
+        BucketList.get_goal!(goal.id)
+      end
+    end
+
+    test "delete_goal/1 without valid id returns an error" do
+      goal = goal_fixture()
+      assert {:ok, %Goal{} = goal} = BucketList.delete_goal(goal)
+      assert_raise Ecto.StaleEntryError, fn ->
+        BucketList.delete_goal(goal)
+      end
+    end
   end
 end

@@ -25,18 +25,27 @@ defmodule CrudAppWeb.GoalController do
     end
   end
 
+  def show(conn, %{"id" => id}) do
+    goal = BucketList.get_goal!(id)
+    render(conn, "show.json", goal: goal)
+  end
+
   def update(conn, %{"goal" => goal_params}) do
     %{ "id" => id, "is_achieved" => is_achieved} = goal_params
     goal = BucketList.get_goal!(id)
 
-    with {:ok, %Goal{} = goal} <- BucketList.update_goal(goal, goal_params) do
+    with {:ok, %Goal{}} <- BucketList.update_goal(goal, goal_params) do
       achieved_goals = BucketList.list_achieved_goals()
       render(conn, "index.json", goals: achieved_goals)
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def delete(conn, %{"id" => id}) do
     goal = BucketList.get_goal!(id)
-    render(conn, "show.json", goal: goal)
+
+    with {:ok, %Goal{}} <- BucketList.delete_goal(goal) do
+      current_goals = BucketList.list_goals()
+      render(conn, "index.json", goals: current_goals)
+    end
   end
 end
