@@ -5,13 +5,13 @@ defmodule CrudApp.BucketList do
   alias CrudApp.BucketList.Goal
 
   def list_goals do
-    query = from g in Goal, where: g.is_achieved == false
-    Repo.all(query)
+    from(g in Goal, where: g.is_achieved == false)
+    |> Repo.all()
   end
 
   def list_achieved_goals do
-    query = from g in Goal, where: g.is_achieved == true
-    Repo.all(query)
+    from(g in Goal, where: g.is_achieved == true)
+    |> Repo.all()
   end
 
   def get_goal!(id), do: Repo.get!(Goal, id)

@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import VueRouter from 'vue-router';
 import AchievedGoals from '@/components/AchievedGoals.vue';
 import BucketList from '@/components/BucketList.vue';
 jest.mock('axios');
@@ -38,6 +39,27 @@ describe('BucketList.vue', () => {
   });
 
   it('retrieves all the goals from the index action', async (done) => {
+    let promise = new Promise(function(resolve, reject) {
+      resolve({
+        "data": {
+          "data": [
+            { 
+              "id": 1,
+              "activity": "swim with sharks",
+              "is_achieved": false,
+              "location": "the Bahamas"
+            },
+            { 
+              "id": 2,
+              "activity": "feed flamingos",
+              "is_achieved": false,
+              "location": "Aruba"
+            }
+          ]
+        }
+      });
+    });
+    axios.get.mockReturnValue(promise);
     const wrapper = shallowMount(BucketList);
 
     await wrapper.vm.fetchGoals();
@@ -57,6 +79,23 @@ describe('BucketList.vue', () => {
       expect(wrapper.vm.goals).toEqual(expected);
       done();
     });
+  });
+
+  it('returns an error if the GET request fails to fetch index page', async (done) => {
+    let promise = new Promise(function(resolve, reject) {
+      reject('Fetch failed');
+    });
+    axios.get.mockReturnValue(promise);
+    const wrapper = shallowMount(BucketList);
+
+    await wrapper.vm.fetchGoals();
+
+    wrapper.vm.$nextTick(() => {
+      expect(wrapper.vm.errors).toEqual(["Fetch failed"]);
+
+      done();
+    });
+  
   });
 
   it('calls the form validator when the "submit" button is clicked', () => {
@@ -155,6 +194,27 @@ describe('BucketList.vue', () => {
   });
 
   it('calls the updateGoal function when button to mark "achieved" is clicked', async () => {
+    let promise = new Promise(function(resolve, reject) {
+      resolve({
+        "data": {
+          "data": [
+            { 
+              "id": 1,
+              "activity": "swim with sharks",
+              "is_achieved": false,
+              "location": "the Bahamas"
+            },
+            { 
+              "id": 2,
+              "activity": "feed flamingos",
+              "is_achieved": false,
+              "location": "Aruba"
+            }
+          ]
+        }
+      });
+    });
+    axios.get.mockReturnValue(promise)
     const spy = jest.spyOn(BucketList.methods, 'updateGoal');
     const wrapper = shallowMount(BucketList);
 
@@ -165,6 +225,27 @@ describe('BucketList.vue', () => {
   });
 
   it('receives the id of the goal when "achieved" button is clicked', async () => {
+    let promise = new Promise(function(resolve, reject) {
+      resolve({
+        "data": {
+          "data": [
+            { 
+              "id": 1,
+              "activity": "swim with sharks",
+              "is_achieved": false,
+              "location": "the Bahamas"
+            },
+            { 
+              "id": 2,
+              "activity": "feed flamingos",
+              "is_achieved": false,
+              "location": "Aruba"
+            }
+          ]
+        }
+      });
+    });
+    axios.get.mockReturnValue(promise)
     const spy = jest.spyOn(BucketList.methods, 'updateGoal');
     const wrapper = shallowMount(BucketList);
 
@@ -192,6 +273,21 @@ describe('BucketList.vue', () => {
   });
 
   it('adds current goals to the Achieved Goals index page when a goal is marked as "achieved"', async (done) => {
+    let promise = new Promise(function(resolve, reject) {
+      resolve({
+        "data": {
+          "data": [
+            { 
+              "id": 1,
+              "activity": "swim with sharks",
+              "is_achieved": true,
+              "location": "the Bahamas"
+            }
+          ]
+        }
+      });
+    });
+    axios.get.mockReturnValue(promise)
     const wrapperAchieved = shallowMount(AchievedGoals);
     const wrapperCurrent = shallowMount(BucketList);
     
@@ -264,4 +360,22 @@ describe('BucketList.vue', () => {
       done();
     });
   });
+  it('redirects to the Achieved Goals index page when a goal is marked as "achieved"', async (done) => {
+    const router = new VueRouter()
+    let promise = new Promise(function(resolve, reject) { resolve("Success") })
+    axios.patch.mockReturnValue(promise)
+    const spy = jest.spyOn(BucketList.methods, "redirect");
+    const wrapper = shallowMount(BucketList, {
+      router
+    });
+
+    await wrapper.vm.fetchGoals();
+    wrapper.find('#achieved-btn-1').trigger('click');
+
+    wrapper.vm.$nextTick(() => {
+      expect(spy).toHaveBeenCalledWith("achieved");
+
+      done();
+    })
+  })
 });
