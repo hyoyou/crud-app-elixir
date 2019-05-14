@@ -37,20 +37,26 @@ describe('BucketList.vue', () => {
     expect(uri).toEqual('/api/goals')
   })
 
-  it('retrieves all the goals from the index action', () => {
+  it('retrieves all the goals from the index action', async (done) => {
     const wrapper = shallowMount(BucketList);
-    const expected = [
-      { id: 1,
-        activity: 'swim with sharks',
-        is_achieved: false,
-        location: 'the Bahamas' },
-      { id: 2,
-        activity: 'feed flamingos',
-        is_achieved: false,
-        location: 'Aruba' } 
-    ];
 
-    expect(wrapper.vm.fetchGoals()).resolves.toEqual(expected);
+    await wrapper.vm.fetchGoals();
+
+    wrapper.vm.$nextTick(() => {
+      const expected = [
+        { id: 1,
+          activity: 'swim with sharks',
+          is_achieved: false,
+          location: 'the Bahamas' },
+        { id: 2,
+          activity: 'feed flamingos',
+          is_achieved: false,
+          location: 'Aruba' } 
+      ];
+      
+      expect(wrapper.vm.goals).toEqual(expected);
+      done();
+    })
   })
 
   it('calls the form validator when the "submit" button is clicked', () => {

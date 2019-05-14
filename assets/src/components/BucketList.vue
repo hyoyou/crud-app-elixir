@@ -66,8 +66,6 @@ export default {
   },
   methods: {
     fetchGoals: async function () {
-      this.goals = []
-
       await axios.get(this.uri)
       .then(response => {
         this.goals = response.data.data
@@ -75,8 +73,6 @@ export default {
       .catch(error => {
         this.errors.push(error)
       })
-
-      return this.goals
     },
     postGoal: async function () {
       this.newGoal = { activity: this.activity, location: this.location }
