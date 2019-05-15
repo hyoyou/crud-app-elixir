@@ -29,7 +29,6 @@ defmodule CrudApp.BucketListTest do
     end
 
     test "list_achieved_goals/0 returns empty list when no achieved goals exist" do
-      goal = goal_fixture()
       assert BucketList.list_achieved_goals == []
     end
 
@@ -63,6 +62,22 @@ defmodule CrudApp.BucketListTest do
     test "update_goal/2 with invalid data returns error changeset" do
       goal = goal_fixture()
       assert {:error, %Ecto.Changeset{}} = BucketList.update_goal(goal, @invalid_attrs)
+    end
+
+    test "delete_goal/1 with valid id deletes a goal" do
+      goal = goal_fixture()
+      assert {:ok, %Goal{} = goal} = BucketList.delete_goal(goal)
+      assert_raise Ecto.NoResultsError, fn ->
+        BucketList.get_goal!(goal.id)
+      end
+    end
+
+    test "delete_goal/1 without valid id returns an error" do
+      goal = goal_fixture()
+      assert {:ok, %Goal{} = goal} = BucketList.delete_goal(goal)
+      assert_raise Ecto.StaleEntryError, fn ->
+        BucketList.delete_goal(goal)
+      end
     end
   end
 end
