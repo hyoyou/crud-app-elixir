@@ -45,12 +45,13 @@
 </template>
 
 <script>
-import axios from 'axios'
+import HttpClient from '../services/httpClient'
 
 export default {
   name: 'BucketList',
   props: {
-    msg: String
+    msg: String,
+    httpClient: Function
   },
   data () {
     return {
@@ -58,15 +59,19 @@ export default {
       activity: "",
       location: "",
       errors: [],
-      uri: process.env.VUE_APP_API_URI
+      uri: process.env.VUE_APP_API_URI,
+      http: null
     }
   },
   created () {
+    this.http = new HttpClient(this.$props.httpClient)
+  },
+  mounted() {
     this.fetchGoals()
   },
   methods: {
     fetchGoals: async function () {
-      await axios.get(this.uri)
+      await this.http.getAllGoals(this.uri)
       .then(response => {
         this.goals = response.data.data
       })
@@ -77,11 +82,8 @@ export default {
     postGoal: async function () {
       this.newGoal = { activity: this.activity, location: this.location }
       
-      await axios.post(this.uri,
-        { goal: this.newGoal },
-        { headers: {
-          'Content-type': 'application/json',
-        }}
+      await this.http.createNewGoal(this.uri,
+        { goal: this.newGoal }
       )
       .then(response => {
         this.goals.push(response.data.data)
@@ -95,7 +97,7 @@ export default {
     updateGoal: async function (goalId) {
       let patchUrl = this.uri + "/" + goalId
 
-      await axios.patch(patchUrl,
+      await this.http.updateGoal(patchUrl,
         { goal: { id: goalId, is_achieved: true } },
         { headers: {
           'Content-type': 'application/json',
@@ -111,7 +113,7 @@ export default {
     deleteGoal: async function (goalId) {
       let deleteUrl = this.uri + "/" + goalId
 
-      await axios.delete(deleteUrl,
+      await this.http.deleteGoal(deleteUrl,
         { goal: { id: goalId } },
         { headers: {
           'Content-type': 'application/json',

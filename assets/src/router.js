@@ -1,9 +1,9 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from './views/Home.vue'
-import AchievedGoals from './components/AchievedGoals.vue'
+import Vue from 'vue';
+import Router from 'vue-router';
+import Home from './views/Home.vue';
+import AchievedGoals from './views/AchievedGoals.vue';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
@@ -14,8 +14,8 @@ export default new Router({
     },
     {
       path: '/achieved',
-      name: 'AchievedGoals',
+      name: 'achieved-goals',
       component: AchievedGoals
     }
   ]
-})
+});

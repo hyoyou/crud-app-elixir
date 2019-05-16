@@ -12,10 +12,13 @@
 </template>
 
 <script>
-import axios from 'axios'
+import HttpClient from '../services/httpClient'
 
 export default {
-  name: 'AchievedGoals',
+  name: 'achieved-list',
+  props: {
+    httpClient: Function
+  },
   data () {
     return {
       goals: [],
@@ -30,7 +33,8 @@ export default {
     fetchAchievedGoals: async function () {
       let achievedIndexUrl = this.uri + "/achieved"
 
-      await axios.get(achievedIndexUrl)
+      const httpClient = new HttpClient(this.$props.httpClient)
+      await httpClient.getAllGoals(achievedIndexUrl)
       .then(response => {
         this.goals = response.data.data
       })

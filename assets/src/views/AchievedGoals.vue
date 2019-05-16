@@ -1,18 +1,18 @@
 <template>
-  <div class="home">
-    <BucketList msg="Travel Bucket List" :httpClient="getHttpClient" />
+  <div class="achieved-home">
+    <AchievedList :httpClient="getHttpClient" />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import BucketList from '@/components/BucketList.vue'
+import AchievedList from '@/components/AchievedList.vue'
 import axios from 'axios'
 
 export default {
-  name: 'home',
+  name: 'achieved-home',
   components: {
-    BucketList
+    AchievedList
   },
   computed: {
     getHttpClient() {

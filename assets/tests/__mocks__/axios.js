@@ -1,95 +1,89 @@
-const fs = require('fs')
+const fs = require('fs');
 
-const mockGet = jest.fn((uri) => {
-  setLastURI(uri);
-  if (uri === "/api/goals/achieved") {
+class MockAxios {
+  constructor() {
+    this.lastURI = '';
+    this.lastGoal = '';
+    this.lastHeader = '';
+  }
+
+  setLastURI(uri) { this.lastURI = uri; }
+  getLastURI() { return this.lastURI; }
+
+  setLastGoal(goal) { this.lastGoal = goal; }
+  getLastGoal() { return this.lastGoal; }
+
+  setLastHeader(header) { this.lastHeader = header; }
+  getLastHeader() { return this.lastHeader; }
+
+  get(uri) {
+    this.setLastURI(uri);
+    if (uri === '/api/goals/achieved') {
+      return new Promise((resolve, reject) => {
+        fs.readFile(`./tests/__mockData__${uri}.json`, (err, data) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(JSON.parse(data));
+        });
+      });
+    }
+
     return new Promise((resolve, reject) => {
       fs.readFile(`./tests/__mockData__${uri}.json`, (err, data) => {
         if (err) {
-          reject(err)
+          reject(err);
         }
-        resolve(JSON.parse(data))
-      })
-    })
+        resolve(JSON.parse(data));
+      });
+    });
   }
 
-  return new Promise((resolve, reject) => {
-    fs.readFile(`./tests/__mockData__${uri}.json`, (err, data) => {
-      if (err) {
-        reject(err)
-      }
-      resolve(JSON.parse(data))
-    })
-  })
-})
+  post(uri, goal, header) {
+    this.setLastURI(uri);
+    this.setLastGoal(goal);
+    this.setLastHeader(header);
 
-const mockPost = jest.fn((uri, goal, header) => {
-  setLastURI(uri);
-  setLastGoal(goal);
-  setLastHeader(header);
+    return new Promise((resolve, reject) => {
+      resolve({ data: { data: { activity: `${goal.goal.activity}`, location: `${goal.goal.location}` }}})
+    });
+  }
 
-  return new Promise((resolve, reject) => {
-    resolve({ data: { data: { activity: `${goal.goal.activity}`, location: `${goal.goal.location}` }}})
-  })
-})
+  patch(uri, goal, header) {
+    this.setLastURI(uri);
+    this.setLastGoal(goal);
+    this.setLastHeader(header);
+    return new Promise((resolve, reject) => {
+      resolve([
+        { 
+          id: 1,
+          activity: 'swim with sharks',
+          is_achieved: true,
+          location: 'the Bahamas' 
+        }
+      ]);
+    });
+  }
 
-const mockPatch = jest.fn((uri, goal, header) => {
-  setLastURI(uri);
-  setLastGoal(goal);
-  setLastHeader(header);
-  return new Promise((resolve, reject) => {
-    resolve([
-      { 
-        id: 1,
-        activity: 'swim with sharks',
-        is_achieved: true,
-        location: 'the Bahamas' 
-      }
-    ])
-  })
-})
-
-const mockDelete = jest.fn((uri, goal, header) => {
-  setLastURI(uri);
-  setLastGoal(goal);
-  setLastHeader(header);
-  return new Promise((resolve, reject) => {
-    resolve(
-      { 
-        data: {
+  delete(uri, goal, header) {
+    this.setLastURI(uri);
+    this.setLastGoal(goal);
+    this.setLastHeader(header);
+    return new Promise((resolve, reject) => {
+      resolve(
+        { 
           data: {
-            id: 2,
-            activity: 'feed flamingos',
-            is_achieved: false,
-            location: 'Aruba'
+            data: {
+              id: 2,
+              activity: 'feed flamingos',
+              is_achieved: false,
+              location: 'Aruba'
+            }
           }
         }
-      }
-    )
-  })
-})
-
-let lastURI;
-const setLastURI = (uri) => lastURI = uri;
-const getLastURI = () => { return lastURI };
-
-let lastGoal;
-const setLastGoal = (goal) => lastGoal = goal;
-const getLastGoal = () => { return lastGoal };
-
-let lastHeader;
-const setLastHeader = (header) => lastHeader = header;
-const getLastHeader = () => { return lastHeader };
-
-module.exports = {
-  get: mockGet,
-  post: mockPost,
-  patch: mockPatch,
-  delete: mockDelete,
-  create: jest.fn(function() {
-    return this
-  }),
-  getLastURI: getLastURI,
-  getLastGoal: getLastGoal,
-  getLastHeader: getLastHeader
+      );
+    });
+  }
 }
+
+export default new MockAxios();
