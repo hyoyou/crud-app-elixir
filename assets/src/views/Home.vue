@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     getHttpClient() {
-      return axios
+      return new HttpClient(axios)
     }
   },
 }

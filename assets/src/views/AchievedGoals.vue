@@ -10,7 +10,7 @@ import AchievedList from '@/components/AchievedList.vue'
 import axios from 'axios'
 
 export default {
-  name: 'achieved-home',
+  name: 'achieved-goals',
   components: {
     AchievedList
   },

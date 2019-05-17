@@ -17,7 +17,7 @@ import HttpClient from '../services/httpClient'
 export default {
   name: 'achieved-list',
   props: {
-    httpClient: Function
+    httpClient: Object
   },
   data () {
     return {
