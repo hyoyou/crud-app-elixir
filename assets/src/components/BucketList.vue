@@ -72,6 +72,7 @@ export default {
       })
       .catch(error => {
         this.errors.push(error)
+        return []
       })
     },
     postGoal: async function () {
@@ -102,7 +103,7 @@ export default {
         }}
       )
       .then(response => {
-        this.$router.push("achieved")
+        this.redirect("achieved")
       })
       .catch(error => {
         this.errors.push(error)
@@ -114,15 +115,18 @@ export default {
       await axios.delete(deleteUrl,
         { goal: { id: goalId } },
         { headers: {
-          'Content-type': 'application/json',
+            'Content-type': 'application/json',
         }}
       )
       .then(response => {
-        this.goals = response.data.data
+          this.goals = response.data.data
       })
       .catch(error => {
-        this.errors.push(error)
+          this.errors.push(error)
       })
+    },
+    redirect: function(path) {
+      this.$router.push(path)
     },
     checkForm: function () {
       if (this.activity !== "" && this.location !== "") {
