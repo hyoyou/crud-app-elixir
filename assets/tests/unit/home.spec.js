@@ -41,19 +41,19 @@ describe('BucketList.vue', () => {
   it('retrieves all the goals from the index action', async (done) => {
     let promise = new Promise(function(resolve, reject) {
       resolve({
-        "data": {
-          "data": [
+        'data': {
+          'data': [
             { 
-              "id": 1,
-              "activity": "swim with sharks",
-              "is_achieved": false,
-              "location": "the Bahamas"
+              'id': 1,
+              'activity': 'swim with sharks',
+              'is_achieved': false,
+              'location': 'the Bahamas'
             },
             { 
-              "id": 2,
-              "activity": "feed flamingos",
-              "is_achieved": false,
-              "location": "Aruba"
+              'id': 2,
+              'activity': 'feed flamingos',
+              'is_achieved': false,
+              'location': 'Aruba'
             }
           ]
         }
@@ -88,11 +88,10 @@ describe('BucketList.vue', () => {
     axios.get.mockReturnValue(promise);
     const wrapper = shallowMount(BucketList);
 
-    await wrapper.vm.fetchGoals();
-
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.errors).toEqual(["Fetch failed"]);
-
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.vm.errors).toEqual(['Fetch failed']);
+      });
       done();
     });
   
@@ -158,7 +157,7 @@ describe('BucketList.vue', () => {
     wrapper.find('#submit-btn').trigger('click');
 
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.errors.length).toEqual(2)
+      expect(wrapper.vm.errors.length).toEqual(2);
       expect(wrapper.text()).toMatch('Please correct the following error(s): Activity is required.Location is required.');
       done();
     });
@@ -196,25 +195,25 @@ describe('BucketList.vue', () => {
   it('calls the updateGoal function when button to mark "achieved" is clicked', async () => {
     let promise = new Promise(function(resolve, reject) {
       resolve({
-        "data": {
-          "data": [
+        'data': {
+          'data': [
             { 
-              "id": 1,
-              "activity": "swim with sharks",
-              "is_achieved": false,
-              "location": "the Bahamas"
+              'id': 1,
+              'activity': 'swim with sharks',
+              'is_achieved': false,
+              'location': 'the Bahamas'
             },
             { 
-              "id": 2,
-              "activity": "feed flamingos",
-              "is_achieved": false,
-              "location": "Aruba"
+              'id': 2,
+              'activity': 'feed flamingos',
+              'is_achieved': false,
+              'location': 'Aruba'
             }
           ]
         }
       });
     });
-    axios.get.mockReturnValue(promise)
+    axios.get.mockReturnValue(promise);
     const spy = jest.spyOn(BucketList.methods, 'updateGoal');
     const wrapper = shallowMount(BucketList);
 
@@ -227,25 +226,25 @@ describe('BucketList.vue', () => {
   it('receives the id of the goal when "achieved" button is clicked', async () => {
     let promise = new Promise(function(resolve, reject) {
       resolve({
-        "data": {
-          "data": [
+        'data': {
+          'data': [
             { 
-              "id": 1,
-              "activity": "swim with sharks",
-              "is_achieved": false,
-              "location": "the Bahamas"
+              'id': 1,
+              'activity': 'swim with sharks',
+              'is_achieved': false,
+              'location': 'the Bahamas'
             },
             { 
-              "id": 2,
-              "activity": "feed flamingos",
-              "is_achieved": false,
-              "location": "Aruba"
+              'id': 2,
+              'activity': 'feed flamingos',
+              'is_achieved': false,
+              'location': 'Aruba'
             }
           ]
         }
       });
     });
-    axios.get.mockReturnValue(promise)
+    axios.get.mockReturnValue(promise);
     const spy = jest.spyOn(BucketList.methods, 'updateGoal');
     const wrapper = shallowMount(BucketList);
 
@@ -275,19 +274,19 @@ describe('BucketList.vue', () => {
   it('adds current goals to the Achieved Goals index page when a goal is marked as "achieved"', async (done) => {
     let promise = new Promise(function(resolve, reject) {
       resolve({
-        "data": {
-          "data": [
+        'data': {
+          'data': [
             { 
-              "id": 1,
-              "activity": "swim with sharks",
-              "is_achieved": true,
-              "location": "the Bahamas"
+              'id': 1,
+              'activity': 'swim with sharks',
+              'is_achieved': true,
+              'location': 'the Bahamas'
             }
           ]
         }
       });
     });
-    axios.get.mockReturnValue(promise)
+    axios.get.mockReturnValue(promise);
     const wrapperAchieved = shallowMount(AchievedGoals);
     const wrapperCurrent = shallowMount(BucketList);
     
@@ -361,10 +360,10 @@ describe('BucketList.vue', () => {
     });
   });
   it('redirects to the Achieved Goals index page when a goal is marked as "achieved"', async (done) => {
-    const router = new VueRouter()
-    let promise = new Promise(function(resolve, reject) { resolve("Success") })
-    axios.patch.mockReturnValue(promise)
-    const spy = jest.spyOn(BucketList.methods, "redirect");
+    const router = new VueRouter();
+    let promise = new Promise(function(resolve, reject) { resolve('Success'); });
+    axios.patch.mockReturnValue(promise);
+    const spy = jest.spyOn(BucketList.methods, 'redirect');
     const wrapper = shallowMount(BucketList, {
       router
     });
@@ -373,9 +372,9 @@ describe('BucketList.vue', () => {
     wrapper.find('#achieved-btn-1').trigger('click');
 
     wrapper.vm.$nextTick(() => {
-      expect(spy).toHaveBeenCalledWith("achieved");
+      expect(spy).toHaveBeenCalledWith('achieved');
 
       done();
-    })
-  })
+    });
+  });
 });
