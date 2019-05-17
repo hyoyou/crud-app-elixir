@@ -29,13 +29,17 @@ $ mix deps.get
 $ mix ecto.setup
 ```
 
-* Install Node.js dependencies with: 
+* Install Vue.js with:
+
+```
+$ npm install vue
+```
+
+* Install Node.js dependencies with:
 
 ```
 $ cd assets && npm install
 ```
-
-
 
 * To use Docker, run Makefile build task with:
 
@@ -54,7 +58,7 @@ $ mix test
 * To run Vue.js tests:
 
 ```
-$ cd assets && npm run test:unit
+$ cd assets && npm run test:unit -- --watch
 ```
 
 
@@ -66,7 +70,7 @@ $ cd assets && npm run test:unit
 $ docker-compose up -d postgres
 ```
 
-* To start your Phoenix server: 
+* To start your Phoenix server:
 
 ```
 $ mix phx.server
