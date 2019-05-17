@@ -47,6 +47,11 @@ $ cd assets && npm install
 $ make build
 ```
 
+* Set up environment variables. Copy sample_env file contents into a .env file. Run in terminal:
+
+```
+$ eval $(cat .env)
+```
 
 ## Running the Tests
 * To run Phoenix tests:
