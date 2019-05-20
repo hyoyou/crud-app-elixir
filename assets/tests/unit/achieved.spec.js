@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import AchievedGoals from '@/components/AchievedGoals.vue';
+import AchievedList from '@/components/AchievedList.vue';
 import BucketList from '@/components/BucketList.vue';
 jest.mock('axios');
 import axios from 'axios';
@@ -26,13 +26,19 @@ describe('AchievedGoals.vue', () => {
       });
     });
     axios.get.mockReturnValue(promise);
-    const wrapperAchieved = shallowMount(AchievedGoals);
-    const wrapperCurrent = shallowMount(BucketList);
-    
-    await wrapperCurrent.vm.fetchGoals();
-    wrapperCurrent.find('#achieved-btn-1').trigger('click');
 
-    wrapperCurrent.vm.$nextTick(() => {
+    const httpClient = axios;
+    const wrapperHome = shallowMount(BucketList, {
+      propsData: { httpClient }
+    });
+    const wrapperAchieved = shallowMount(AchievedList, {
+      propsData: { httpClient }
+    });
+    
+    await wrapperHome.vm.fetchGoals();
+    wrapperHome.find('#achieved-btn-1').trigger('click');
+
+    wrapperHome.vm.$nextTick(() => {
       expect(wrapperAchieved.vm.goals).toEqual([
         { id: 1,
           activity: 'swim with sharks',

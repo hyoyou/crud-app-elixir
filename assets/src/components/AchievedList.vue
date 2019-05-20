@@ -12,34 +12,41 @@
 </template>
 
 <script>
-import axios from 'axios'
+import ServerWrapper from '../services/serverWrapper';
 
 export default {
-  name: 'AchievedGoals',
+  name: 'achieved-list',
+  props: {
+    httpClient: Function
+  },
   data () {
     return {
       goals: [],
       error: [],
-      uri: process.env.VUE_APP_API_URI
-    }
+      uri: process.env.VUE_APP_API_URI,
+      requestHandler: null
+    };
   },
   created () {
-    this.fetchAchievedGoals()
+    this.requestHandler = new ServerWrapper(this.$props.httpClient);
+  },
+  mounted() {
+    this.fetchAchievedGoals();
   },
   methods: {
     fetchAchievedGoals: async function () {
-      let achievedIndexUrl = this.uri + "/achieved"
+      let achievedIndexUrl = this.uri + '/achieved';
 
-      await axios.get(achievedIndexUrl)
-      .then(response => {
-        this.goals = response.data.data
-      })
-      .catch(error => {
-        this.errors.push(error)
-      })
+      await this.requestHandler.getAllGoals(achievedIndexUrl)
+        .then(response => {
+          this.goals = response.data.data;
+        })
+        .catch(error => {
+          this.errors.push(error);
+        });
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">
