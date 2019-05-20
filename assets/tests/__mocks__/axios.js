@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 const mockGet = jest.fn((uri) => {
   setLastURI(uri);
 });
@@ -22,7 +20,7 @@ const mockDelete = jest.fn((uri, goal, header) => {
   setLastHeader(header);
 });
 
-let lastURI;
+let lastURI = '/api/goals';
 const setLastURI = (uri) => lastURI = uri;
 const getLastURI = () => { return lastURI; };
 

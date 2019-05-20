@@ -1,12 +1,34 @@
 import { shallowMount } from '@vue/test-utils';
 import VueRouter from 'vue-router';
 import BucketList from '@/components/BucketList.vue';
+import HEADERS from '@/constants/http.js';
 jest.mock('axios');
 import axios from 'axios';
 
 beforeEach(() => {
   jest.resetModules();
   jest.clearAllMocks();
+  let promise = new Promise(function(resolve, reject) {
+    resolve({
+      'data': {
+        'data': [
+          { 
+            'id': 1,
+            'activity': 'swim with sharks',
+            'is_achieved': false,
+            'location': 'the Bahamas'
+          },
+          { 
+            'id': 2,
+            'activity': 'feed flamingos',
+            'is_achieved': false,
+            'location': 'Aruba'
+          }
+        ]
+      }
+    });
+  });
+  axios.get.mockReturnValue(promise);
 });
 
 describe('BucketList.vue', () => {
@@ -30,7 +52,7 @@ describe('BucketList.vue', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('sends the correct API endpoint when it makes a GET request to the for the index page', () => {
+  it('sends the correct API endpoint when it makes a request to the API for the index page', () => {
     shallowMount(BucketList);
     const uri = axios.getLastURI();
 
@@ -38,28 +60,10 @@ describe('BucketList.vue', () => {
   });
 
   it('retrieves all the current goals from the index action', async (done) => {
-    let promise = new Promise(function(resolve, reject) {
-      resolve({
-        'data': {
-          'data': [
-            { 
-              'id': 1,
-              'activity': 'swim with sharks',
-              'is_achieved': false,
-              'location': 'the Bahamas'
-            },
-            { 
-              'id': 2,
-              'activity': 'feed flamingos',
-              'is_achieved': false,
-              'location': 'Aruba'
-            }
-          ]
-        }
-      });
+    const httpClient = axios;
+    const wrapper = shallowMount(BucketList, {
+      propsData: { httpClient }
     });
-    axios.get.mockReturnValue(promise);
-    const wrapper = shallowMount(BucketList);
 
     await wrapper.vm.fetchGoals();
 
@@ -80,12 +84,16 @@ describe('BucketList.vue', () => {
     });
   });
 
-  it('returns an error if the GET request fails to fetch index page', (done) => {
+  it('returns an error if the request fails to fetch index page', (done) => {
     let promise = new Promise(function(resolve, reject) {
       reject('Fetch failed');
     });
     axios.get.mockReturnValue(promise);
-    const wrapper = shallowMount(BucketList);
+
+    const httpClient = axios;
+    const wrapper = shallowMount(BucketList, {
+      propsData: { httpClient }
+    });
 
     wrapper.vm.$nextTick(() => {
       wrapper.vm.$nextTick(() => {
@@ -162,8 +170,12 @@ describe('BucketList.vue', () => {
     });
   });
 
-  it('makes a POST request to the correct API endpoint with correct data for a new goal', (done) => {
-    const wrapper = shallowMount(BucketList);
+  it('sends the correct data when it makes a request to the API for a new goal', (done) => {
+    const httpClient = axios;
+    const wrapper = shallowMount(BucketList, {
+      propsData: { httpClient }
+    });
+
     wrapper.find('[data-activity]').setValue('sample activity');
     wrapper.find('[data-location]').setValue('sample location');
     wrapper.find('#submit-btn').trigger('click');
@@ -174,71 +186,70 @@ describe('BucketList.vue', () => {
       const header = axios.getLastHeader();
       expect(uri).toEqual('/api/goals');
       expect(goal).toEqual({'goal': { activity: 'sample activity', location: 'sample location'}});
-      expect(header).toEqual({'headers': {'Content-type': 'application/json'}});
+      expect(header).toEqual(HEADERS);
       done();
     });
   });
 
-  it('makes a call to the create action of the API when user fills out the form and the button is clicked', (done) => {
+  it('makes a call to the create action of the API when user fills out the form and clicks "submit"', (done) => {
     let promise = new Promise(function(resolve, reject) {
       resolve({
         'data': {
-          'data': [
-            { 
-              'id': 1,
-              'activity': 'sample activity',
-              'is_achieved': false,
-              'location': 'sample location'
-            }
-          ]
+          'data': { 
+            'id': 3,
+            'activity': 'sample activity',
+            'is_achieved': false,
+            'location': 'sample location'
+          }
         }
       });
     });
-    axios.get.mockReturnValue(promise);
-    const wrapper = shallowMount(BucketList);
+    axios.post.mockReturnValue(promise);
+
+    const httpClient = axios;
+    const wrapper = shallowMount(BucketList, {
+      propsData: { httpClient }
+    });
 
     wrapper.find('[data-activity]').setValue('sample activity');
     wrapper.find('[data-location]').setValue('sample location');
     wrapper.find('#submit-btn').trigger('click');
 
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.goals).toEqual([{ 
-        'id': 1,
-        'activity': 'sample activity',
-        'is_achieved': false,
-        'location': 'sample location'
-      }]);
+      expect(wrapper.vm.goals).toEqual([
+        { 
+          'id': 1,
+          'activity': 'swim with sharks',
+          'is_achieved': false,
+          'location': 'the Bahamas'
+        },
+        { 
+          'id': 2,
+          'activity': 'feed flamingos',
+          'is_achieved': false,
+          'location': 'Aruba'
+        },
+        { 
+          'id': 3,
+          'activity': 'sample activity',
+          'is_achieved': false,
+          'location': 'sample location'
+        }
+      ]);
       done();
     });
   });
 
   it('returns an error if the API returns an error creating a new goal', (done) => {
-    let promiseGet = new Promise(function(resolve, reject) {
-      resolve({
-        'data': {
-          'data': [
-            { 
-              'id': 1,
-              'activity': 'swim with sharks',
-              'is_achieved': false,
-              'location': 'the Bahamas'
-            },
-            { 
-              'id': 2,
-              'activity': 'feed flamingos',
-              'is_achieved': false,
-              'location': 'Aruba'
-            }
-          ]
-        }
-      });
-    });
-    axios.get.mockReturnValue(promiseGet);
     let promisePost = new Promise(function(resolve, reject) {
       reject('Creating a new goal failed');
     });
     axios.post.mockReturnValue(promisePost);
-    const wrapper = shallowMount(BucketList);
+
+    const httpClient = axios;
+    const wrapper = shallowMount(BucketList, {
+      propsData: { httpClient }
+    });
 
     wrapper.find('[data-activity]').setValue('sample activity');
     wrapper.find('[data-location]').setValue('sample location');
@@ -252,30 +263,12 @@ describe('BucketList.vue', () => {
     });
   });
 
-  it('calls the updateGoal function when button to mark "achieved" is clicked', async () => {
-    let promise = new Promise(function(resolve, reject) {
-      resolve({
-        'data': {
-          'data': [
-            { 
-              'id': 1,
-              'activity': 'swim with sharks',
-              'is_achieved': false,
-              'location': 'the Bahamas'
-            },
-            { 
-              'id': 2,
-              'activity': 'feed flamingos',
-              'is_achieved': false,
-              'location': 'Aruba'
-            }
-          ]
-        }
-      });
-    });
-    axios.get.mockReturnValue(promise);
+  it('calls a function to update a goal when button to mark "achieved" is clicked', async () => {
     const spy = jest.spyOn(BucketList.methods, 'updateGoal');
-    const wrapper = shallowMount(BucketList);
+    const httpClient = axios;
+    const wrapper = shallowMount(BucketList, {
+      propsData: { httpClient }
+    });
 
     await wrapper.vm.fetchGoals();
     wrapper.find('#achieved-btn-1').trigger('click');
@@ -284,29 +277,11 @@ describe('BucketList.vue', () => {
   });
 
   it('receives the id of the goal when "achieved" button is clicked', async () => {
-    let promise = new Promise(function(resolve, reject) {
-      resolve({
-        'data': {
-          'data': [
-            { 
-              'id': 1,
-              'activity': 'swim with sharks',
-              'is_achieved': false,
-              'location': 'the Bahamas'
-            },
-            { 
-              'id': 2,
-              'activity': 'feed flamingos',
-              'is_achieved': false,
-              'location': 'Aruba'
-            }
-          ]
-        }
-      });
-    });
-    axios.get.mockReturnValue(promise);
     const spy = jest.spyOn(BucketList.methods, 'updateGoal');
-    const wrapper = shallowMount(BucketList);
+    const httpClient = axios;
+    const wrapper = shallowMount(BucketList, {
+      propsData: { httpClient }
+    });
 
     await wrapper.vm.fetchGoals();
     wrapper.find('#achieved-btn-1').trigger('click');
@@ -314,8 +289,11 @@ describe('BucketList.vue', () => {
     expect(spy).toHaveBeenCalledWith(1);
   });
 
-  it('makes a PATCH request to the correct API endpoint with correct data to update a goal', async (done) => {
-    const wrapper = shallowMount(BucketList);
+  it('sends the correct API endpoint and data when it makes a request to the API to update a goal', async (done) => {
+    const httpClient = axios;
+    const wrapper = shallowMount(BucketList, {
+      propsData: { httpClient }
+    });
     
     await wrapper.vm.fetchGoals();
     wrapper.find('#achieved-btn-1').trigger('click');
@@ -326,19 +304,22 @@ describe('BucketList.vue', () => {
       const header = axios.getLastHeader();
       expect(uri).toEqual('/api/goals/1');
       expect(goal).toEqual({'goal': { id: 1, is_achieved: true }});
-      expect(header).toEqual({'headers': {'Content-type': 'application/json'}});
+      expect(header).toEqual(HEADERS);
       done();
     });
   });
 
-  it('redirects to the Achieved Goals index page when a goal is marked as "achieved"', async (done) => {
+  it('redirects to the achieved index page when a goal is marked as "achieved"', async (done) => {
     const router = new VueRouter();
     let promise = new Promise(function(resolve, reject) { resolve('Success'); });
     axios.patch.mockReturnValue(promise);
+
     const spy = jest.spyOn(BucketList.methods, 'redirect');
-    const wrapper = shallowMount(BucketList, {
-      router
-    });
+    const httpClient = axios;
+    const wrapper = shallowMount(BucketList, 
+      { propsData: { httpClient } },
+      { router }
+    );
 
     await wrapper.vm.fetchGoals();
     wrapper.find('#achieved-btn-1').trigger('click');
@@ -351,32 +332,15 @@ describe('BucketList.vue', () => {
   });
 
   it('returns an error if the API returns an error updating goal', async (done) => {
-    let promiseGet = new Promise(function(resolve, reject) {
-      resolve({
-        'data': {
-          'data': [
-            { 
-              'id': 1,
-              'activity': 'swim with sharks',
-              'is_achieved': false,
-              'location': 'the Bahamas'
-            },
-            { 
-              'id': 2,
-              'activity': 'feed flamingos',
-              'is_achieved': false,
-              'location': 'Aruba'
-            }
-          ]
-        }
-      });
-    });
-    axios.get.mockReturnValue(promiseGet);
     let promisePatch = new Promise(function(resolve, reject) {
       reject('Updating goal failed');
     });
     axios.patch.mockReturnValue(promisePatch);
-    const wrapper = shallowMount(BucketList);
+
+    const httpClient = axios;
+    const wrapper = shallowMount(BucketList, {
+      propsData: { httpClient }
+    });
 
     await wrapper.vm.fetchGoals();
     wrapper.find('#achieved-btn-1').trigger('click');
@@ -391,7 +355,10 @@ describe('BucketList.vue', () => {
 
   it('calls the deleteGoal function when button to mark "delete" is clicked', async () => {
     const spy = jest.spyOn(BucketList.methods, 'deleteGoal');
-    const wrapper = shallowMount(BucketList);
+    const httpClient = axios;
+    const wrapper = shallowMount(BucketList, {
+      propsData: { httpClient }
+    });
 
     await wrapper.vm.fetchGoals();
     wrapper.find('#delete-btn-1').trigger('click');
@@ -399,9 +366,12 @@ describe('BucketList.vue', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('receives the id of the goal when "delete" button is clicked', async () => {
+  it('receives the id of the goal when the "delete" button is clicked', async () => {
     const spy = jest.spyOn(BucketList.methods, 'deleteGoal');
-    const wrapper = shallowMount(BucketList);
+    const httpClient = axios;
+    const wrapper = shallowMount(BucketList, {
+      propsData: { httpClient }
+    });
 
     await wrapper.vm.fetchGoals();
     wrapper.find('#delete-btn-1').trigger('click');
@@ -409,8 +379,11 @@ describe('BucketList.vue', () => {
     expect(spy).toHaveBeenCalledWith(1);
   });
 
-  it('makes a DELETE request to the correct API endpoint with correct id to delete a goal', async (done) => {
-    const wrapper = shallowMount(BucketList);
+  it('sends the correct goal id when it makes a request to the API to delete a goal', async (done) => {
+    const httpClient = axios;
+    const wrapper = shallowMount(BucketList, {
+      propsData: { httpClient }
+    });
     
     await wrapper.vm.fetchGoals();
     wrapper.find('#delete-btn-1').trigger('click');
@@ -421,34 +394,12 @@ describe('BucketList.vue', () => {
       const header = axios.getLastHeader();
       expect(uri).toEqual('/api/goals/1');
       expect(goal).toEqual({'goal': { id: 1 }});
-      expect(header).toEqual({'headers': {'Content-type': 'application/json'}});
+      expect(header).toEqual(HEADERS);
       done();
     });
   });
 
   it('rerenders current goals in the Current Goals index page when a goal is deleted', async (done) => {
-    let promiseGet = new Promise(function(resolve, reject) {
-      resolve({
-        'data': {
-          'data': [
-            { 
-              'id': 1,
-              'activity': 'swim with sharks',
-              'is_achieved': false,
-              'location': 'the Bahamas'
-            },
-            { 
-              'id': 2,
-              'activity': 'feed flamingos',
-              'is_achieved': false,
-              'location': 'Aruba'
-            }
-          ]
-        }
-      });
-    });
-    axios.get.mockReturnValue(promiseGet);
-
     let promiseDelete = new Promise(function(resolve, reject) {
       resolve({
         'data': {
@@ -464,7 +415,11 @@ describe('BucketList.vue', () => {
       });
     });
     axios.delete.mockReturnValue(promiseDelete);
-    const wrapper = shallowMount(BucketList);
+
+    const httpClient = axios;
+    const wrapper = shallowMount(BucketList, {
+      propsData: { httpClient }
+    });
     
     await wrapper.vm.fetchGoals();
     wrapper.find('#delete-btn-1').trigger('click');
@@ -483,34 +438,15 @@ describe('BucketList.vue', () => {
   });
 
   it('returns an error if the API returns an error deleting goal', async (done) => {
-    let promiseGet = new Promise(function(resolve, reject) {
-      resolve({
-        'data': {
-          'data': [
-            { 
-              'id': 1,
-              'activity': 'swim with sharks',
-              'is_achieved': false,
-              'location': 'the Bahamas'
-            },
-            { 
-              'id': 2,
-              'activity': 'feed flamingos',
-              'is_achieved': false,
-              'location': 'Aruba'
-            }
-          ]
-        }
-      });
-    });
-    axios.get.mockReturnValue(promiseGet);
-
     let promiseDelete = new Promise(function(resolve, reject) {
       reject('Deleting goal failed');
     });
     axios.delete.mockReturnValue(promiseDelete);
 
-    const wrapper = shallowMount(BucketList);
+    const httpClient = axios;
+    const wrapper = shallowMount(BucketList, {
+      propsData: { httpClient }
+    });
 
     await wrapper.vm.fetchGoals();
     wrapper.find('#delete-btn-1').trigger('click');
