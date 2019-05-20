@@ -1,6 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
 import VueRouter from 'vue-router';
-import AchievedGoals from '@/components/AchievedGoals.vue';
 import BucketList from '@/components/BucketList.vue';
 jest.mock('axios');
 import axios from 'axios';
@@ -24,21 +23,21 @@ describe('BucketList.vue', () => {
     expect(wrapper.html()).toContain('<form id="new-goal">');
   });
 
-  it('makes a GET request to the index action of the API when the page is rendered', () => {
+  it('calls a function that makes a GET request to the index action of the API when the page is rendered', () => {
     const spy = jest.spyOn(BucketList.methods, 'fetchGoals');
     shallowMount(BucketList);
 
     expect(spy).toHaveBeenCalled();
   });
 
-  it('makes a GET request to the correct API endpoint for the index page', () => {
+  it('sends the correct API endpoint when it makes a GET request to the for the index page', () => {
     shallowMount(BucketList);
     const uri = axios.getLastURI();
 
     expect(uri).toEqual('/api/goals');
   });
 
-  it('retrieves all the goals from the index action', async (done) => {
+  it('retrieves all the current goals from the index action', async (done) => {
     let promise = new Promise(function(resolve, reject) {
       resolve({
         'data': {
@@ -81,7 +80,7 @@ describe('BucketList.vue', () => {
     });
   });
 
-  it('returns an error if the GET request fails to fetch index page', async (done) => {
+  it('returns an error if the GET request fails to fetch index page', (done) => {
     let promise = new Promise(function(resolve, reject) {
       reject('Fetch failed');
     });
@@ -91,8 +90,8 @@ describe('BucketList.vue', () => {
     wrapper.vm.$nextTick(() => {
       wrapper.vm.$nextTick(() => {
         expect(wrapper.vm.errors).toEqual(['Fetch failed']);
+        done();
       });
-      done();
     });
   
   });
@@ -181,14 +180,75 @@ describe('BucketList.vue', () => {
   });
 
   it('makes a call to the create action of the API when user fills out the form and the button is clicked', (done) => {
+    let promise = new Promise(function(resolve, reject) {
+      resolve({
+        'data': {
+          'data': [
+            { 
+              'id': 1,
+              'activity': 'sample activity',
+              'is_achieved': false,
+              'location': 'sample location'
+            }
+          ]
+        }
+      });
+    });
+    axios.get.mockReturnValue(promise);
     const wrapper = shallowMount(BucketList);
+
     wrapper.find('[data-activity]').setValue('sample activity');
     wrapper.find('[data-location]').setValue('sample location');
     wrapper.find('#submit-btn').trigger('click');
 
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.goals).toEqual([{ activity: 'sample activity', location: 'sample location'}]);
+      expect(wrapper.vm.goals).toEqual([{ 
+        'id': 1,
+        'activity': 'sample activity',
+        'is_achieved': false,
+        'location': 'sample location'
+      }]);
       done();
+    });
+  });
+
+  it('returns an error if the API returns an error creating a new goal', (done) => {
+    let promiseGet = new Promise(function(resolve, reject) {
+      resolve({
+        'data': {
+          'data': [
+            { 
+              'id': 1,
+              'activity': 'swim with sharks',
+              'is_achieved': false,
+              'location': 'the Bahamas'
+            },
+            { 
+              'id': 2,
+              'activity': 'feed flamingos',
+              'is_achieved': false,
+              'location': 'Aruba'
+            }
+          ]
+        }
+      });
+    });
+    axios.get.mockReturnValue(promiseGet);
+    let promisePost = new Promise(function(resolve, reject) {
+      reject('Creating a new goal failed');
+    });
+    axios.post.mockReturnValue(promisePost);
+    const wrapper = shallowMount(BucketList);
+
+    wrapper.find('[data-activity]').setValue('sample activity');
+    wrapper.find('[data-location]').setValue('sample location');
+    wrapper.find('#submit-btn').trigger('click');
+
+    wrapper.vm.$nextTick(() => {
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.vm.errors).toEqual(['Creating a new goal failed']);
+        done();
+      });
     });
   });
 
@@ -271,36 +331,61 @@ describe('BucketList.vue', () => {
     });
   });
 
-  it('adds current goals to the Achieved Goals index page when a goal is marked as "achieved"', async (done) => {
-    let promise = new Promise(function(resolve, reject) {
+  it('redirects to the Achieved Goals index page when a goal is marked as "achieved"', async (done) => {
+    const router = new VueRouter();
+    let promise = new Promise(function(resolve, reject) { resolve('Success'); });
+    axios.patch.mockReturnValue(promise);
+    const spy = jest.spyOn(BucketList.methods, 'redirect');
+    const wrapper = shallowMount(BucketList, {
+      router
+    });
+
+    await wrapper.vm.fetchGoals();
+    wrapper.find('#achieved-btn-1').trigger('click');
+
+    wrapper.vm.$nextTick(() => {
+      expect(spy).toHaveBeenCalledWith('achieved');
+
+      done();
+    });
+  });
+
+  it('returns an error if the API returns an error updating goal', async (done) => {
+    let promiseGet = new Promise(function(resolve, reject) {
       resolve({
         'data': {
           'data': [
             { 
               'id': 1,
               'activity': 'swim with sharks',
-              'is_achieved': true,
+              'is_achieved': false,
               'location': 'the Bahamas'
+            },
+            { 
+              'id': 2,
+              'activity': 'feed flamingos',
+              'is_achieved': false,
+              'location': 'Aruba'
             }
           ]
         }
       });
     });
-    axios.get.mockReturnValue(promise);
-    const wrapperAchieved = shallowMount(AchievedGoals);
-    const wrapperCurrent = shallowMount(BucketList);
-    
-    await wrapperCurrent.vm.fetchGoals();
-    wrapperCurrent.find('#achieved-btn-1').trigger('click');
+    axios.get.mockReturnValue(promiseGet);
+    let promisePatch = new Promise(function(resolve, reject) {
+      reject('Updating goal failed');
+    });
+    axios.patch.mockReturnValue(promisePatch);
+    const wrapper = shallowMount(BucketList);
 
-    wrapperCurrent.vm.$nextTick(() => {
-      expect(wrapperAchieved.vm.goals).toEqual([
-        { id: 1,
-          activity: 'swim with sharks',
-          is_achieved: true,
-          location: 'the Bahamas' }
-      ]);
-      done();
+    await wrapper.vm.fetchGoals();
+    wrapper.find('#achieved-btn-1').trigger('click');
+
+    wrapper.vm.$nextTick(() => {
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.vm.errors).toEqual(['Updating goal failed']);
+        done();
+      });
     });
   });
 
@@ -342,6 +427,43 @@ describe('BucketList.vue', () => {
   });
 
   it('rerenders current goals in the Current Goals index page when a goal is deleted', async (done) => {
+    let promiseGet = new Promise(function(resolve, reject) {
+      resolve({
+        'data': {
+          'data': [
+            { 
+              'id': 1,
+              'activity': 'swim with sharks',
+              'is_achieved': false,
+              'location': 'the Bahamas'
+            },
+            { 
+              'id': 2,
+              'activity': 'feed flamingos',
+              'is_achieved': false,
+              'location': 'Aruba'
+            }
+          ]
+        }
+      });
+    });
+    axios.get.mockReturnValue(promiseGet);
+
+    let promiseDelete = new Promise(function(resolve, reject) {
+      resolve({
+        'data': {
+          'data': [
+            { 
+              'id': 2,
+              'activity': 'feed flamingos',
+              'is_achieved': false,
+              'location': 'Aruba'
+            }
+          ]
+        }
+      });
+    });
+    axios.delete.mockReturnValue(promiseDelete);
     const wrapper = shallowMount(BucketList);
     
     await wrapper.vm.fetchGoals();
@@ -350,31 +472,54 @@ describe('BucketList.vue', () => {
     await wrapper.vm.deleteGoal(1);
 
     wrapper.vm.$nextTick(() => {
-      expect(wrapper.vm.goals).toEqual(
+      expect(wrapper.vm.goals).toEqual([
         { id: 2,
           activity: 'feed flamingos',
           is_achieved: false,
           location: 'Aruba' }
-      );
+      ]);
       done();
     });
   });
-  it('redirects to the Achieved Goals index page when a goal is marked as "achieved"', async (done) => {
-    const router = new VueRouter();
-    let promise = new Promise(function(resolve, reject) { resolve('Success'); });
-    axios.patch.mockReturnValue(promise);
-    const spy = jest.spyOn(BucketList.methods, 'redirect');
-    const wrapper = shallowMount(BucketList, {
-      router
+
+  it('returns an error if the API returns an error deleting goal', async (done) => {
+    let promiseGet = new Promise(function(resolve, reject) {
+      resolve({
+        'data': {
+          'data': [
+            { 
+              'id': 1,
+              'activity': 'swim with sharks',
+              'is_achieved': false,
+              'location': 'the Bahamas'
+            },
+            { 
+              'id': 2,
+              'activity': 'feed flamingos',
+              'is_achieved': false,
+              'location': 'Aruba'
+            }
+          ]
+        }
+      });
     });
+    axios.get.mockReturnValue(promiseGet);
+
+    let promiseDelete = new Promise(function(resolve, reject) {
+      reject('Deleting goal failed');
+    });
+    axios.delete.mockReturnValue(promiseDelete);
+
+    const wrapper = shallowMount(BucketList);
 
     await wrapper.vm.fetchGoals();
-    wrapper.find('#achieved-btn-1').trigger('click');
-
+    wrapper.find('#delete-btn-1').trigger('click');
+    
     wrapper.vm.$nextTick(() => {
-      expect(spy).toHaveBeenCalledWith('achieved');
-
-      done();
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.vm.errors).toEqual(['Deleting goal failed']);
+        done();
+      });
     });
   });
 });
