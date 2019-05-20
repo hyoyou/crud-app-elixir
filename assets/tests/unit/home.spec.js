@@ -30,7 +30,7 @@ describe('BucketList.vue', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('sends the correct API endpoint when it makes a GET request to the for the index page', () => {
+  it('sends the correct API endpoint when it makes a request to the API for the index page', () => {
     shallowMount(BucketList);
     const uri = axios.getLastURI();
 
@@ -80,7 +80,7 @@ describe('BucketList.vue', () => {
     });
   });
 
-  it('returns an error if the GET request fails to fetch index page', (done) => {
+  it('returns an error if the request fails to fetch index page', (done) => {
     let promise = new Promise(function(resolve, reject) {
       reject('Fetch failed');
     });
@@ -162,7 +162,7 @@ describe('BucketList.vue', () => {
     });
   });
 
-  it('makes a POST request to the correct API endpoint with correct data for a new goal', (done) => {
+  it('sends the correct data when it makes a request to the API for a new goal', (done) => {
     const wrapper = shallowMount(BucketList);
     wrapper.find('[data-activity]').setValue('sample activity');
     wrapper.find('[data-location]').setValue('sample location');
@@ -179,7 +179,7 @@ describe('BucketList.vue', () => {
     });
   });
 
-  it('makes a call to the create action of the API when user fills out the form and the button is clicked', (done) => {
+  it('makes a call to the create action of the API when user fills out the form and clicks "submit"', (done) => {
     let promise = new Promise(function(resolve, reject) {
       resolve({
         'data': {
@@ -252,7 +252,7 @@ describe('BucketList.vue', () => {
     });
   });
 
-  it('calls the updateGoal function when button to mark "achieved" is clicked', async () => {
+  it('calls a function to update a goal when button to mark "achieved" is clicked', async () => {
     let promise = new Promise(function(resolve, reject) {
       resolve({
         'data': {
@@ -314,7 +314,7 @@ describe('BucketList.vue', () => {
     expect(spy).toHaveBeenCalledWith(1);
   });
 
-  it('makes a PATCH request to the correct API endpoint with correct data to update a goal', async (done) => {
+  it('sends the correct API endpoint and data when it makes a request to the API to update a goal', async (done) => {
     const wrapper = shallowMount(BucketList);
     
     await wrapper.vm.fetchGoals();
@@ -331,14 +331,12 @@ describe('BucketList.vue', () => {
     });
   });
 
-  it('redirects to the Achieved Goals index page when a goal is marked as "achieved"', async (done) => {
+  it('redirects to the achieved index page when a goal is marked as "achieved"', async (done) => {
     const router = new VueRouter();
     let promise = new Promise(function(resolve, reject) { resolve('Success'); });
     axios.patch.mockReturnValue(promise);
     const spy = jest.spyOn(BucketList.methods, 'redirect');
-    const wrapper = shallowMount(BucketList, {
-      router
-    });
+    const wrapper = shallowMount(BucketList, { router });
 
     await wrapper.vm.fetchGoals();
     wrapper.find('#achieved-btn-1').trigger('click');
@@ -372,10 +370,12 @@ describe('BucketList.vue', () => {
       });
     });
     axios.get.mockReturnValue(promiseGet);
+
     let promisePatch = new Promise(function(resolve, reject) {
       reject('Updating goal failed');
     });
     axios.patch.mockReturnValue(promisePatch);
+
     const wrapper = shallowMount(BucketList);
 
     await wrapper.vm.fetchGoals();
@@ -399,7 +399,7 @@ describe('BucketList.vue', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('receives the id of the goal when "delete" button is clicked', async () => {
+  it('receives the id of the goal when the "delete" button is clicked', async () => {
     const spy = jest.spyOn(BucketList.methods, 'deleteGoal');
     const wrapper = shallowMount(BucketList);
 
@@ -409,7 +409,7 @@ describe('BucketList.vue', () => {
     expect(spy).toHaveBeenCalledWith(1);
   });
 
-  it('makes a DELETE request to the correct API endpoint with correct id to delete a goal', async (done) => {
+  it('sends the correct goal id when it makes a request to the API to delete a goal', async (done) => {
     const wrapper = shallowMount(BucketList);
     
     await wrapper.vm.fetchGoals();
