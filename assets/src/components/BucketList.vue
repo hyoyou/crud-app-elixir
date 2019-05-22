@@ -45,102 +45,106 @@
 </template>
 
 <script>
-import axios from 'axios'
+import ServerWrapper from '@/services/serverWrapper';
 
 export default {
   name: 'BucketList',
   props: {
-    msg: String
+    msg: String,
+    httpClient: Function
   },
   data () {
     return {
       goals: [],
-      activity: "",
-      location: "",
+      activity: '',
+      location: '',
       errors: [],
-      uri: process.env.VUE_APP_API_URI
-    }
+      uri: process.env.VUE_APP_API_URI,
+      requestHandler: null
+    };
   },
   created () {
-    this.fetchGoals()
+    this.requestHandler = new ServerWrapper(this.$props.httpClient);
+  },
+  mounted() {
+    this.fetchGoals();
   },
   methods: {
     fetchGoals: async function () {
-      await axios.get(this.uri)
-      .then(response => {
-        this.goals = response.data.data
-      })
-      .catch(error => {
-        this.errors.push(error)
-      })
+      await this.requestHandler.getAllGoals(this.uri)
+        .then(response => {
+          this.goals = response.data.data;
+        })
+        .catch(error => {
+          this.errors.push(error);
+        });
     },
     postGoal: async function () {
-      this.newGoal = { activity: this.activity, location: this.location }
+      this.newGoal = { activity: this.activity, location: this.location };
       
-      await axios.post(this.uri,
-        { goal: this.newGoal },
-        { headers: {
-          'Content-type': 'application/json',
-        }}
+      await this.requestHandler.createNewGoal(this.uri,
+        { goal: this.newGoal }
       )
-      .then(response => {
-        this.goals.push(response.data.data)
-      })
-      .catch(error => {
-        this.errors.push(error)
-      })
+        .then(response => {
+          this.goals.push(response.data.data);
+        })
+        .catch(error => {
+          this.errors.push(error);
+        });
 
-      this.activity = this.location = ""
+      this.activity = this.location = '';
     },
     updateGoal: async function (goalId) {
-      let patchUrl = this.uri + "/" + goalId
+      let patchUrl = this.uri + '/' + goalId;
 
-      await axios.patch(patchUrl,
+      await this.requestHandler.updateGoal(patchUrl,
         { goal: { id: goalId, is_achieved: true } },
         { headers: {
           'Content-type': 'application/json',
         }}
       )
-      .then(response => {
-        this.$router.push("achieved")
-      })
-      .catch(error => {
-        this.errors.push(error)
-      })
+        .then(() => {
+          this.redirect('achieved');
+        })
+        .catch(error => {
+          this.errors.push(error);
+        });
     },
     deleteGoal: async function (goalId) {
-      let deleteUrl = this.uri + "/" + goalId
+      let deleteUrl = this.uri + '/' + goalId;
 
-      await axios.delete(deleteUrl,
+      await this.requestHandler.deleteGoal(deleteUrl,
         { goal: { id: goalId } },
         { headers: {
           'Content-type': 'application/json',
         }}
       )
-      .then(response => {
-        this.goals = response.data.data
-      })
-      .catch(error => {
-        this.errors.push(error)
-      })
+        .then(response => {
+          this.goals = response.data.data;
+        })
+        .catch(error => {
+          this.errors.push(error);
+        });
+    },
+    redirect: function(path) {
+      this.$router.push(path);
     },
     checkForm: function () {
-      if (this.activity !== "" && this.location !== "") {
+      if (this.activity !== '' && this.location !== '') {
         this.postGoal();
       }
 
       this.errors = [];
 
-      if (this.activity === "") {
+      if (this.activity === '') {
         this.errors.push('Activity is required.');
       }
-
-      if (this.location === "") {
+      if (this.location === '') {
         this.errors.push('Location is required.');
       }
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">
