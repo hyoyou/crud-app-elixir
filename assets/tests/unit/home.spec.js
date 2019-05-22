@@ -2,31 +2,30 @@ import { shallowMount } from '@vue/test-utils';
 import VueRouter from 'vue-router';
 import BucketList from '@/components/BucketList.vue';
 import HEADERS from '@/constants/http.js';
+import PromiseFactory from '../helpers/promiseFactory.js';
 jest.mock('axios');
 import axios from 'axios';
 
 beforeEach(() => {
   jest.resetModules();
   jest.clearAllMocks();
-  let promise = new Promise(function(resolve, reject) {
-    resolve({
-      'data': {
-        'data': [
-          { 
-            'id': 1,
-            'activity': 'swim with sharks',
-            'is_achieved': false,
-            'location': 'the Bahamas'
-          },
-          { 
-            'id': 2,
-            'activity': 'feed flamingos',
-            'is_achieved': false,
-            'location': 'Aruba'
-          }
-        ]
-      }
-    });
+  let promise = PromiseFactory.createResolve({
+    'data': {
+      'data': [
+        { 
+          'id': 1,
+          'activity': 'swim with sharks',
+          'is_achieved': false,
+          'location': 'the Bahamas'
+        },
+        { 
+          'id': 2,
+          'activity': 'feed flamingos',
+          'is_achieved': false,
+          'location': 'Aruba'
+        }
+      ]
+    }
   });
   axios.get.mockReturnValue(promise);
 });
@@ -85,9 +84,7 @@ describe('BucketList.vue', () => {
   });
 
   it('returns an error if the request fails to fetch index page', (done) => {
-    let promise = new Promise(function(resolve, reject) {
-      reject('Fetch failed');
-    });
+    let promise = PromiseFactory.createReject('Fetch failed');
     axios.get.mockReturnValue(promise);
 
     const httpClient = axios;
@@ -192,17 +189,15 @@ describe('BucketList.vue', () => {
   });
 
   it('makes a call to the create action of the API when user fills out the form and clicks "submit"', (done) => {
-    let promise = new Promise(function(resolve, reject) {
-      resolve({
-        'data': {
-          'data': { 
-            'id': 3,
-            'activity': 'sample activity',
-            'is_achieved': false,
-            'location': 'sample location'
-          }
+    let promise = PromiseFactory.createResolve({
+      'data': {
+        'data': { 
+          'id': 3,
+          'activity': 'sample activity',
+          'is_achieved': false,
+          'location': 'sample location'
         }
-      });
+      }
     });
     axios.post.mockReturnValue(promise);
 
@@ -241,10 +236,8 @@ describe('BucketList.vue', () => {
   });
 
   it('returns an error if the API returns an error creating a new goal', (done) => {
-    let promisePost = new Promise(function(resolve, reject) {
-      reject('Creating a new goal failed');
-    });
-    axios.post.mockReturnValue(promisePost);
+    let promise = PromiseFactory.createReject('Creating a new goal failed');
+    axios.post.mockReturnValue(promise);
 
     const httpClient = axios;
     const wrapper = shallowMount(BucketList, {
@@ -311,7 +304,7 @@ describe('BucketList.vue', () => {
 
   it('redirects to the achieved index page when a goal is marked as "achieved"', async (done) => {
     const router = new VueRouter();
-    let promise = new Promise(function(resolve, reject) { resolve('Success'); });
+    let promise = PromiseFactory.createResolve('Success');
     axios.patch.mockReturnValue(promise);
 
     const spy = jest.spyOn(BucketList.methods, 'redirect');
@@ -332,10 +325,8 @@ describe('BucketList.vue', () => {
   });
 
   it('returns an error if the API returns an error updating goal', async (done) => {
-    let promisePatch = new Promise(function(resolve, reject) {
-      reject('Updating goal failed');
-    });
-    axios.patch.mockReturnValue(promisePatch);
+    let promise = PromiseFactory.createReject('Updating goal failed');
+    axios.patch.mockReturnValue(promise);
 
     const httpClient = axios;
     const wrapper = shallowMount(BucketList, {
@@ -400,21 +391,19 @@ describe('BucketList.vue', () => {
   });
 
   it('rerenders current goals in the Current Goals index page when a goal is deleted', async (done) => {
-    let promiseDelete = new Promise(function(resolve, reject) {
-      resolve({
-        'data': {
-          'data': [
-            { 
-              'id': 2,
-              'activity': 'feed flamingos',
-              'is_achieved': false,
-              'location': 'Aruba'
-            }
-          ]
-        }
-      });
+    let promise = PromiseFactory.createResolve({
+      'data': {
+        'data': [
+          { 
+            'id': 2,
+            'activity': 'feed flamingos',
+            'is_achieved': false,
+            'location': 'Aruba'
+          }
+        ]
+      }
     });
-    axios.delete.mockReturnValue(promiseDelete);
+    axios.delete.mockReturnValue(promise);
 
     const httpClient = axios;
     const wrapper = shallowMount(BucketList, {
@@ -438,10 +427,8 @@ describe('BucketList.vue', () => {
   });
 
   it('returns an error if the API returns an error deleting goal', async (done) => {
-    let promiseDelete = new Promise(function(resolve, reject) {
-      reject('Deleting goal failed');
-    });
-    axios.delete.mockReturnValue(promiseDelete);
+    let promise = PromiseFactory.createReject('Deleting goal failed');
+    axios.delete.mockReturnValue(promise);
 
     const httpClient = axios;
     const wrapper = shallowMount(BucketList, {
