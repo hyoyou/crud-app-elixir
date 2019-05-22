@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import ServerWrapper from '../services/serverWrapper';
+import ServerWrapper from '@/services/serverWrapper';
 
 export default {
   name: 'achieved-list',

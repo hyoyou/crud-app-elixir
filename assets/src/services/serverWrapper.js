@@ -1,4 +1,4 @@
-import HEADERS from '../constants/http';
+import HEADERS from '@/constants/http';
 
 export default class ServerWrapper {
   constructor(httpClient) {
